@@ -1,0 +1,7 @@
+mouse
+keyboard
+pyautogui
+Pillow
+numpy
+customtkinter
+tk
