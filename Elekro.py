@@ -33,14 +33,14 @@ def hatFarbe(screenshot_fenster,farbe):
 
     if fr <= r and fg <= g and fb <= b:
         print("‐●                                     ●‐")
-        print("‐● Schalttafel wurde erfolgeich gelöst ●‐")
+        print("‐● Eine Leitung wurde erfolgeich gelöst ●‐")
         print("‐●                                     ●‐")
         return True
     return False
 
 
 def beendeScript():
-    return hatFarbe([1860, 20, 1900, 70],[0,100,0])
+    return hatFarbe([1860, 20, 1900, 70],[0, 100, 0])
 
 def istGruen():
     return hatFarbe([1860, 20, 1900, 70],[0,100,0])
@@ -49,26 +49,29 @@ def istGruen():
 def hatErsterBlock():
     sx = 10
     sy = 10
-    x1 = 1004
+    x1 = 1005
     x2 = x1+sx
-    y1 = 580
+    y1 = 591
     y2 = y1+sy
     ersterBlock = [x1, y1, x2, y2]
-    gelb=[200, 200,0] 
+    gelb=[250, 200,2] 
+    print("Erster block")
     return hatFarbe(ersterBlock,gelb)
 
 def hatZweiterBlock():
     sx = 10
     sy = 10
-    x1 = 1050
+    x1 = 1053
     x2 = x1+sx
     y1 = 580
     y2 = y1+sy
     zweiterBlock = [x1, y1, x2, y2]
-    orange=[200, 200,0]
+    orange=[200, 100,20]
+    print("Zweiter block")
     return hatFarbe(zweiterBlock,orange)
 
 def hatDritterBlock():
+    
     sx = 10
     sy = 10
     x1 = 1091
@@ -76,17 +79,13 @@ def hatDritterBlock():
     y1 = 580
     y2 = y1+sy
     dritterBlock = [x1, y1, x2, y2]
-    gruen=[100,60,0]
-    hatFarbe(dritterBlock,gruen)
+    gruen=[0, 160 , 70]
+    print("Dritter block")
+    return hatFarbe(dritterBlock,gruen)
 
 def BruteForceKabelLoesung():
-    # 3!=3*2*1=6
-    for i in range(6):
-        if not (hatErsterBlock() & hatZweiterBlock() & hatDritterBlock()):
-            print("alle blöcke verteilt! sind verbunden")
-            break
-        # TODO nicer algorithmus    
-    
+    return not (hatErsterBlock() & hatZweiterBlock() & hatDritterBlock())
+
 def anfang(game_coords):
     screenshot = ImageGrab.grab(bbox=game_coords,include_layered_windows=True,all_screens=True)
     erkennung = np.array(screenshot)
@@ -150,7 +149,7 @@ while True:
             stop = False
         
     while stop == False:
-        print("‐● Im Schalttafelmodus ●‐")
+        #print("‐● Im Schalttafelmodus ●‐")
       # Erster Durchgang
         if hatErsterBlock():
             pyautogui.moveTo (1011 ,586 )
@@ -169,6 +168,7 @@ while True:
             break 
 
         if hatDritterBlock():
+            
             pyautogui.moveTo(1093, 592)
             pyautogui.dragTo(1055, 533, button='left', duration=duration)  # Grün / Braun
             pyautogui.mouseUp(button='left')
@@ -180,7 +180,6 @@ while True:
             pyautogui.moveTo(1011, 586)
             pyautogui.dragTo(874, 537, button='left', duration=duration)
             pyautogui.mouseUp(button='left')
-            print("‐● Im Schalttafelmodus ●‐")
 
         if beendeScript() or stop == True:
             break    
@@ -194,11 +193,11 @@ while True:
         if beendeScript() or stop == True:
             break 
 
-        if hatDritterBlock(): 
+        if hatDritterBlock():
             pyautogui.moveTo(1093, 592)
             pyautogui.dragTo(872, 597, button='left', duration=duration)  # Grün / Blau
             pyautogui.mouseUp(button='left')
-            print("‐● Im Schalttafelmodus ●‐")
+            
 
         if beendeScript() or stop == True:
             break
@@ -214,8 +213,7 @@ while True:
         if hatZweiterBlock():
             pyautogui.moveTo(1053, 591)
             pyautogui.dragTo(872, 597, button='left', duration=duration)  # Orange / Blau
-            pyautogui.mouseUp(button='left') 
-            print("‐● Im Schalttafelmodus ●‐")
+            pyautogui.mouseUp(button='left')
 
         if beendeScript() or stop == True:
             break 
@@ -223,6 +221,4 @@ while True:
         if hatDritterBlock():
             pyautogui.moveTo(1093, 592)
             pyautogui.dragTo(874, 537, button='left', duration=duration)  # Grün / Pink
-            pyautogui.mouseUp(button='left') 
-            
-        
+            pyautogui.mouseUp(button='left')
