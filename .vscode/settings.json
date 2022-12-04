@@ -1,0 +1,11 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+    "python.linting.enabled": true
+}
