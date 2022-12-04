@@ -5,23 +5,14 @@ import pyautogui
 from PIL import ImageGrab
 import numpy as np
 
-# screenshot_fenster=[x1, y1, x2, y2]
-# farben=[r,g,b]
-# bsp. if hatFarben([780, 347, 1142, 763],[200, 200,0]):
-#           stop = False
 def hatFarbe(screenshot_fenster,farbe):
     screenshot = ImageGrab.grab(bbox=screenshot_fenster,include_layered_windows=True,all_screens=True)
     erkennung = np.array(screenshot)
-    #print(str(screenshot))
     xlen = len(erkennung)
     ylen = len(erkennung[0])
-    #print("‐● Im Schalttafelmodus ●‐")
-    #print("x:" + str(xlen) + " y:" + str(ylen))
-    # erkennung[]
+
     midX = xlen //2
     midY = ylen //2
-
-    #print("mitte: x:" + str(midX) + " y:" + str(midY))
 
     r = erkennung[midX,midY][0]
     g = erkennung[midX,midY][1]
@@ -38,13 +29,11 @@ def hatFarbe(screenshot_fenster,farbe):
         return True
     return False
 
-
 def beendeScript():
     return hatFarbe([1860, 20, 1900, 70],[0, 100, 0])
 
 def istGruen():
     return hatFarbe([1860, 20, 1900, 70],[0,100,0])
-
 
 def hatErsterBlock():
     sx = 10
@@ -89,17 +78,10 @@ def BruteForceKabelLoesung():
 def anfang(game_coords):
     screenshot = ImageGrab.grab(bbox=game_coords,include_layered_windows=True,all_screens=True)
     erkennung = np.array(screenshot)
-    #print(str(screenshot))
     xlen = len(erkennung)
     ylen = len(erkennung[0])
-    #print("Warte auf Schalttafel")
-
-    #print("x:" + str(xlen) + " y:" + str(ylen))
-    # erkennung[]
     midX = xlen //2
     midY = ylen //2
-
-    #print("mitte: x:" + str(midX) + " y:" + str(midY))
 
     r = erkennung[midX,midY][0]
     g = erkennung[midX,midY][1]
@@ -173,7 +155,8 @@ while True:
             pyautogui.dragTo(1055, 533, button='left', duration=duration)  # Grün / Braun
             pyautogui.mouseUp(button='left')
 
-        BruteForceKabelLoesung()
+        if BruteForceKabelLoesung():
+            stop = True
             
         if beendeScript() or stop == True:
             break 
@@ -200,8 +183,8 @@ while True:
             pyautogui.dragTo(872, 597, button='left', duration=duration)  # Grün / Blau
             pyautogui.mouseUp(button='left')
             
-        BruteForceKabelLoesung()
-
+        if BruteForceKabelLoesung():
+            stop = True
         if beendeScript() or stop == True:
             break
 
@@ -226,4 +209,5 @@ while True:
             pyautogui.dragTo(874, 537, button='left', duration=duration)  # Grün / Pink
             pyautogui.mouseUp(button='left')
 
-        BruteForceKabelLoesung()
+        if BruteForceKabelLoesung():
+            stop = True
