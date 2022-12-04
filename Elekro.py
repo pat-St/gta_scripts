@@ -31,7 +31,7 @@ def hatFarbe(screenshot_fenster,farbe):
     fg = farbe[1]
     fb = farbe[2]
 
-    if fr <= r & fg <= g & fb <= b:
+    if fr <= r and fg <= g and fb <= b:
         print("‐●                                     ●‐")
         print("‐● Schalttafel wurde erfolgeich gelöst ●‐")
         print("‐●                                     ●‐")
