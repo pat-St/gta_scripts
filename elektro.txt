@@ -1,0 +1,83 @@
+#gelb
+
+multimonitorY = 1920 
+sx = 10
+sy = 10
+x1 = 1004
+x2 = x1+sx
+y1 = 580
+y2 = y1+sy
+game_coords = [x1, y1, x2, y2]
+screenshot = ImageGrab.grab(bbox=game_coords,include_layered_windows=True,all_screens=True)
+erkennung = np.array(screenshot)
+print(str(screenshot))
+xlen = len(erkennung)
+ylen = len(erkennung[0])
+#midX = xlen //2
+#midY = ylen //2
+r = erkennung[sx//2,sy//2][0]
+g = erkennung[sx//2,sy//2][1]
+b = erkennung[sx//2,sy//2][2]
+print("R,G,B: "+str(r)+" , "+str(g)+" , "+str(b))
+if [200, 200,] <= [r,g,]:
+    print("gelb")
+
+
+#orange 
+
+import mouse
+import keyboard
+import time
+from PIL import ImageGrab
+import numpy as np
+multimonitorY = 1920 
+sx = 10
+sy = 10
+x1 = 1050
+x2 = x1+sx
+y1 = 580
+y2 = y1+sy
+game_coords = [x1, y1, x2, y2]
+screenshot = ImageGrab.grab(bbox=game_coords,include_layered_windows=True,all_screens=True)
+erkennung = np.array(screenshot)
+print(str(screenshot))
+xlen = len(erkennung)
+ylen = len(erkennung[0])
+#midX = xlen //2
+#midY = ylen //2
+r = erkennung[sx//2,sy//2][0]
+g = erkennung[sx//2,sy//2][1]
+b = erkennung[sx//2,sy//2][2]
+print("R,G,B: "+str(r)+" , "+str(g)+" , "+str(b))
+if [200, 200,] <= [r,g,]:
+    print("hat farbe")
+
+
+#grün 
+
+import mouse
+import keyboard
+import time
+from PIL import ImageGrab
+import numpy as np
+multimonitorY = 1920 
+sx = 10
+sy = 10
+x1 = 1091
+x2 = x1+sx
+y1 = 580
+y2 = y1+sy
+game_coords = [x1, y1, x2, y2]
+screenshot = ImageGrab.grab(bbox=game_coords,include_layered_windows=True,all_screens=True)
+erkennung = np.array(screenshot)
+print(str(screenshot))
+xlen = len(erkennung)
+ylen = len(erkennung[0])
+#midX = xlen //2
+#midY = ylen //2
+r = erkennung[sx//2,sy//2][0]
+g = erkennung[sx//2,sy//2][1]
+b = erkennung[sx//2,sy//2][2]
+print("R,G,B: "+str(r)+" , "+str(g)+" , "+str(b))
+if [100,60] <= [g,b]:
+    print("hat farbe")
