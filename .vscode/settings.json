@@ -6,6 +6,8 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": true
         },
+        "editor.wordWrap": "on",
+        "editor.wordWrapColumn": 180
     },
     "python.linting.enabled": true
 }

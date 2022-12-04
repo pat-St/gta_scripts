@@ -7,6 +7,10 @@ import pyautogui
 from PIL import ImageGrab
 
 
+def warten():
+    time.sleep(0.1)
+
+
 def hatFarbe(screenshot_fenster, farbe):
     screenshot = ImageGrab.grab(
         bbox=screenshot_fenster, include_layered_windows=True, all_screens=True)
@@ -33,12 +37,15 @@ def hatFarbe(screenshot_fenster, farbe):
     return False
 
 
-def beendeScript():
-    return hatFarbe([1860, 20, 1900, 70], [0, 100, 0])
+# Test auf Gelöste Schalttafel
+def wurdeGeloest():
+    erfolgGruen = [0, 100, 0]
+    return hatFarbe([1860, 20, 1900, 70], farbe=erfolgGruen)
 
 
-def istGruen():
-    return hatFarbe([1860, 20, 1900, 70], [0, 100, 0])
+def alleBloeckeSindVerbunden():
+    warten()
+    return not (hatErsterBlock() and hatZweiterBlock() and hatDritterBlock())
 
 
 def hatErsterBlock():
@@ -50,7 +57,7 @@ def hatErsterBlock():
     y2 = y1+sy
     ersterBlock = [x1, y1, x2, y2]
     gelb = [250, 200, 2]
-    #print("Erster block")
+    # print("Erster block")
     return hatFarbe(ersterBlock, gelb)
 
 
@@ -63,12 +70,11 @@ def hatZweiterBlock():
     y2 = y1+sy
     zweiterBlock = [x1, y1, x2, y2]
     orange = [200, 100, 20]
-    #print("Zweiter block")
+    # print("Zweiter block")
     return hatFarbe(zweiterBlock, orange)
 
 
 def hatDritterBlock():
-
     sx = 10
     sy = 10
     x1 = 1091
@@ -77,17 +83,16 @@ def hatDritterBlock():
     y2 = y1+sy
     dritterBlock = [x1, y1, x2, y2]
     gruen = [0, 160, 70]
-    #print("Dritter block")
+    # print("Dritter block")
     return hatFarbe(dritterBlock, gruen)
 
+# Visueller start trigger
+# screenshot_fenster=[x1,y1,x2,y2]
 
-def BruteForceKabelLoesung():
-    return not (hatErsterBlock() & hatZweiterBlock() & hatDritterBlock())
 
-
-def anfang(game_coords):
+def schalttafelErkannt(screenshot_fenster):
     screenshot = ImageGrab.grab(
-        bbox=game_coords, include_layered_windows=True, all_screens=True)
+        bbox=screenshot_fenster, include_layered_windows=True, all_screens=True)
     erkennung = np.array(screenshot)
     xlen = len(erkennung)
     ylen = len(erkennung[0])
@@ -103,10 +108,7 @@ def anfang(game_coords):
     return False
 
 
-def warten():
-    time.sleep(0.1)
-
-
+# User start/stop tasteneingabe
 def start_event():
     global stop
     stop = False
@@ -119,6 +121,89 @@ def stop_event():
     print("Wird Pausiert")
 
 
+def durchlauf1():
+    global stop
+    print("‐● Löse mit 1. Durchlauf ●‐")
+    if hatErsterBlock():
+        pyautogui.moveTo(1011, 586)
+        pyautogui.dragTo(872, 594, button='left',
+                         duration=duration)  # Gelb / Blau
+        pyautogui .mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return  # raus anstatt weiter
+
+    if hatZweiterBlock():
+        pyautogui.moveTo(1053, 591)
+        pyautogui.dragTo(874, 537, button='left',
+                         duration=duration)  # Orange / Pink
+        pyautogui.mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return
+
+    if hatDritterBlock():
+        pyautogui.moveTo(1093, 592)
+        pyautogui.dragTo(1055, 533, button='left',
+                         duration=duration)  # Grün / Braun
+        pyautogui.mouseUp(button='left')
+
+
+def durchlauf2():
+    global stop
+    print("‐● Löse mit 2. Durchlauf ●‐")
+    if hatErsterBlock():
+        pyautogui.moveTo(1011, 586)
+        pyautogui.dragTo(874, 537, button='left', duration=duration)
+        pyautogui.mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return  # raus anstatt weiter
+
+    if hatZweiterBlock():
+        pyautogui.moveTo(1053, 591)
+        pyautogui.dragTo(1055, 533, button='left',
+                         duration=duration)  # Orange / Braun
+        pyautogui.mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return
+
+    if hatDritterBlock():
+        pyautogui.moveTo(1093, 592)
+        pyautogui.dragTo(872, 597, button='left',
+                         duration=duration)  # Grün / Blau
+        pyautogui.mouseUp(button='left')
+
+
+def durchlauf3():
+    global stop
+    print("‐● Löse mit 3. Durchlauf ●‐")
+    if hatErsterBlock():
+        pyautogui.moveTo(1011, 586)
+        pyautogui.dragTo(1055, 533, button='left',
+                         duration=duration)  # Gelb / Braun
+        pyautogui.mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return  # raus anstatt weiter
+
+    if hatZweiterBlock():
+        pyautogui.moveTo(1053, 591)
+        pyautogui.dragTo(872, 597, button='left',
+                         duration=duration)  # Orange / Blau
+        pyautogui.mouseUp(button='left')
+
+    if wurdeGeloest() or stop == True:
+        return
+
+    if hatDritterBlock():
+        pyautogui.moveTo(1093, 592)
+        pyautogui.dragTo(874, 537, button='left',
+                         duration=duration)  # Grün / Pink
+        pyautogui.mouseUp(button='left')
+
+
 global stop
 stop = True
 
@@ -129,104 +214,36 @@ duration = 0.6
 counterLoop = 0
 
 while True:
-
-    counterLoop += 1
-    if counterLoop < 2:
+    if stop == True:
         print("‐●                       ●‐")
         print("‐● Warte auf Schalttafel ●‐")
         print("‐●                       ●‐")
-        counterLoop = 0
 
-    # warten bis eingabe dann start
-    #print("Zum Starten q drücken und e zum Pausieren")
+    # warten bis eingabe
     while stop == True:
-        counterLoop += 1
-        if counterLoop < 2:
-            print("test")
-            time.sleep(2)
-
-        if anfang([780, 347, 1142, 763]):
+        time.sleep(0.5)
+        if schalttafelErkannt([780, 347, 1142, 763]):
+            # fange an zu lösen
             stop = False
 
+    # loop bis gelöst wurde
     while stop == False:
-
-        if BruteForceKabelLoesung():
+        if alleBloeckeSindVerbunden():
+            # wurde gelöst
             stop = True
-        if hatErsterBlock():
-            pyautogui.moveTo(1011, 586)
-            pyautogui.dragTo(872, 594, button='left',
-                             duration=duration)  # Gelb / Blau
-            pyautogui .mouseUp(button='left')
-
-        if beendeScript() or stop == True:
             break
 
-        if hatZweiterBlock():
-            pyautogui.moveTo(1053, 591)
-            pyautogui.dragTo(874, 537, button='left',
-                             duration=duration)  # Orange / Pink
-            pyautogui.mouseUp(button='left')
+        durchlauf1()
 
-        if beendeScript() or stop == True:
+        if wurdeGeloest() or stop == True:
             break
 
-        if hatDritterBlock():
-            pyautogui.moveTo(1093, 592)
-            pyautogui.dragTo(1055, 533, button='left',
-                             duration=duration)  # Grün / Braun
-            pyautogui.mouseUp(button='left')
+        durchlauf2()
 
-        if beendeScript() or stop == True:
+        if wurdeGeloest() or stop == True:
             break
 
-        if hatErsterBlock():
-            pyautogui.moveTo(1011, 586)
-            pyautogui.dragTo(874, 537, button='left', duration=duration)
-            pyautogui.mouseUp(button='left')
-        # if BruteForceKabelLoesung():
-        #     stop = True
+        durchlauf3()
 
-        if beendeScript() or stop == True:
+        if wurdeGeloest() or stop == True:
             break
-
-        if hatZweiterBlock():
-            pyautogui.moveTo(1053, 591)
-            pyautogui.dragTo(1055, 533, button='left',
-                             duration=duration)  # Orange / Braun
-            pyautogui.mouseUp(button='left')
-
-        if beendeScript() or stop == True:
-            break
-
-        if hatDritterBlock():
-            pyautogui.moveTo(1093, 592)
-            pyautogui.dragTo(872, 597, button='left',
-                             duration=duration)  # Grün / Blau
-            pyautogui.mouseUp(button='left')
-
-        if beendeScript() or stop == True:
-            break
-
-        if hatErsterBlock():
-            pyautogui.moveTo(1011, 586)
-            pyautogui.dragTo(1055, 533, button='left',
-                             duration=duration)  # Gelb / Braun
-            pyautogui.mouseUp(button='left')
-
-        # if BruteForceKabelLoesung():
-        #     stop = True
-
-        if beendeScript() or stop == True:
-            break
-
-        if hatZweiterBlock():
-            pyautogui.moveTo(1053, 591)
-            pyautogui.dragTo(872, 597, button='left',
-                             duration=duration)  # Orange / Blau
-            pyautogui.mouseUp(button='left')
-
-        if hatDritterBlock():
-            pyautogui.moveTo(1093, 592)
-            pyautogui.dragTo(874, 537, button='left',
-                             duration=duration)  # Grün / Pink
-            pyautogui.mouseUp(button='left')
