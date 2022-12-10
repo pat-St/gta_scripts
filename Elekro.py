@@ -210,7 +210,7 @@ stop = True
 keyboard.add_hotkey('q', lambda: start_event())
 keyboard.add_hotkey('e', lambda: stop_event())
 
-duration = 0.6
+duration = 0.5
 counterLoop = 0
 
 while True:
