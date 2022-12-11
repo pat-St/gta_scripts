@@ -6,6 +6,9 @@ import numpy as np
 import pyautogui
 from PIL import ImageGrab
 
+# Geschwindigkeit
+duration = 0.5
+
 
 def warten():
     time.sleep(0.1)

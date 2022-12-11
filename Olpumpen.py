@@ -5,6 +5,8 @@ import mouse
 import numpy as np
 from PIL import ImageGrab
 
+#game_coords = [653, 347, 1142, 763]
+
 
 def isWeiss(game_coords):
     screenshot = ImageGrab.grab(
@@ -43,7 +45,7 @@ def Anfang():
 
 def drücken():
     mouse.press('left')
-    time.sleep(2.6)
+    time.sleep(3.8)
     mouse.release('left')
 
 
