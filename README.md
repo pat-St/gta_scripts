@@ -10,18 +10,3 @@
 
 !!WICHTIG!! Stelle sicher das die Auflösung auf 1920 x 1080 eingestellt ist und 16:9 format.
 
-
-
-## schiebe Änderungen nach github
-
-1. öffne git bash im repo.
-2. mache `git add .`
-3. commit mit `git commit -m"das ist ein commit"`
-4. push mit `git push`
-
-
-## hole Änderungen von github
-
-1. öffne git bash im repo.
-2. mache `git fetch`
-3. ziehe neueste änderungen mit `git pull`
