@@ -1,6 +1,14 @@
-# Installiere Imports mit Befehl
+# Installation
+1. Downloade alle als zip.
+2. Zieh den Order auf deinen Desktop.
+3. Öffne Eingabeauforderung und gibt ein:
+    `cd Desktop` Enter
+    `cd gta_scripts-main` Enter
+4. Jetzt bist du im richtigen Verzeichnis und gibst das ein:    
+    `pip install -r "recommentations.txt"`
+5. Wenn alles installier ist dann kannst du jetzt die Scripte ausführen.
 
-`pip install -r "recommentations.txt"`
+WICHTIG!! Stelle sicher das die Auflösung auf 1920 x 1080 eingestellt ist und 16:9 format.
 
 
 

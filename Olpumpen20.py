@@ -104,7 +104,7 @@ while True:
             time.sleep(1)
             print("Warte")
 
-        mouse.move(500, 600, absolute=True)
+        mouse.move(600, 600, absolute=True)
         drücken()
 
         if isWeiss([653, 347, 1142, 763]):
