@@ -1,8 +1,8 @@
-import mouse
-import keyboard
 import time
-import pyautogui
 
+import keyboard
+import mouse
+import pyautogui
 
 global stop
 stop = True
@@ -26,7 +26,7 @@ keyboard.add_hotkey('e', lambda: stop_event())
 while True:
 
     # warten bis eingabe dann start
-    print("Zum Starten x drücken dund e zum Pausieren")
+    print("Zum Starten x drücken d und e zum Pausieren")
     while stop == True:
         time.sleep(1)
 
