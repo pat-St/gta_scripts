@@ -40,7 +40,7 @@ class VisualInput(object):
 
 
 class FishSymbol(object):
-    def __init__(self, posX=0, posY=0, threshold=15) -> None:
+    def __init__(self, posX=0, posY=0, threshold=7) -> None:
         self.x = int(posX)
         self.y = int(posY)
         self.left = False
@@ -50,18 +50,19 @@ class FishSymbol(object):
     def _changeDir(self, newPos):
         dist = self.x - newPos
         if (abs(dist) < self.threshold):
-            return
+            return False
         if (dist > 0):
             self.left = True
             self.right = False
         else:
             self.left = False
             self.right = True
+        return True
 
     def newPos(self, posX, posY):
-        self._changeDir(int(posX))
-        self.x = int(posX)
-        self.y = int(posY)
+        if self._changeDir(int(posX)):
+            self.x = int(posX)
+            self.y = int(posY)
         return self
 
     def detected(self) -> bool:
@@ -82,7 +83,7 @@ class FishSymbol(object):
 
 class FishSymbolDetection(object):
 
-    def __init__(self, model_path="./assets/model.pt", showOutput=True, custom_fish_symbol: FishSymbol = None):
+    def __init__(self, model_path: str = "./assets/model.pt", showOutput: bool = True, custom_fish_symbol: FishSymbol = None):
         self.model = YOLO(model_path)
         self.showOutput = showOutput
         self.origin_source_input = VisualInput()
@@ -94,9 +95,10 @@ class FishSymbolDetection(object):
     def _predict_fish(self, source_input: any) -> None:
         results = self.model.predict(
             source=source_input,
+            device=0,
             # show=True,
-            conf=0.4,
-            iou=0.5,
+            conf=0.2,
+            iou=0.3,
             max_det=1,
             classes=1)
         detected_fishes = [
@@ -115,9 +117,10 @@ class FishSymbolDetection(object):
 
     def _nextFrame(self):
         next_frame = self.origin_source_input.next()
-        h, w = next_frame .shape[:2]
-        next_frame = cv.resize(next_frame, (w//3, h//3))
-        return cv.cvtColor(next_frame, cv.COLOR_RGB2BGR)
+        # h, w = next_frame .shape[:2]
+        # next_frame = cv.resize(next_frame, (w//1, h//1))
+        return next_frame
+        # return cv.cvtColor(next_frame, cv.COLOR_RGB2BGR)
 
     def _drawDetected(self, frame):
         x = max(self.fishsymbol.getX()-12, 0)
@@ -156,6 +159,8 @@ class FishSymbolDetection(object):
             if self.showOutput:
                 frame = self._drawDetected(frame)
         if self.showOutput:
+            h, w = frame.shape[:2]
+            frame = cv.resize(frame, (w//2, h//2))
             cv.imshow('fish detection result', frame)
         key_input = cv.waitKey(50) & 0xff
         if key_input == 27:

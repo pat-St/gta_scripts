@@ -1,5 +1,5 @@
 {
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "[python]": {
         "editor.defaultFormatter": "ms-python.python",
         "editor.formatOnSave": true,
@@ -10,5 +10,5 @@
         "editor.wordWrapColumn": 180
     },
     "python.linting.enabled": true,
-    "python.terminal.launchArgs":["QT_QPA_PLATFORM=xcb",".venv"],
+    // "python.terminal.launchArgs":[".venv"],
 }
