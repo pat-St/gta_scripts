@@ -2,9 +2,11 @@ import time
 
 import keyboard
 import mouse
-import pyautogui
 
 from fishing import FishSymbolDetection
+
+# import pyautogui
+
 
 global stop
 stop = True
@@ -40,20 +42,21 @@ while True:
             if fishsymbol.isLeft():
                 print("fish directed to left")
                 print("A wird gehalten")
-                pyautogui.keyDown('a')
-                pyautogui.keyUp('d', _pause=False)
+                keyboard.press('a')
+                keyboard.release('d')
             if fishsymbol.isRight():
                 print("fish directed to right")
                 print("D wird gehalten")
-                pyautogui.keyDown('d')
-                pyautogui.keyUp('a', _pause=False)
+                keyboard.press('d')
+                keyboard.release('a')
         else:
             print("Taste wird losgelassen")
-            pyautogui.keyUp('a', _pause=False)
-            pyautogui.keyUp('d', _pause=False)
+            keyboard.release('a')
+            keyboard.release('d')
         print("Warte bis nächste runde")
-        # time.sleep(7)
+        time.sleep(0.5)
     print("Taste wird losgelassen")
-    pyautogui.keyUp('a', _pause=False)
-    pyautogui.keyUp('d', _pause=False)
+    keyboard.release('a')
+    keyboard.release('d')
+    print("Fischerkennung beendet")
     fishDetection.stop()

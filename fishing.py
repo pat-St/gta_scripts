@@ -82,11 +82,14 @@ class FishSymbol(object):
 
 class FishSymbolDetection(object):
 
-    def __init__(self, model_path="./assets/model.pt", showOutput=True):
+    def __init__(self, model_path="./assets/model.pt", showOutput=True, custom_fish_symbol: FishSymbol = None):
         self.model = YOLO(model_path)
         self.showOutput = showOutput
         self.origin_source_input = VisualInput()
-        self.fishsymbol = FishSymbol()
+        if custom_fish_symbol:
+            self.fishsymbol = custom_fish_symbol
+        else:
+            self.fishsymbol = FishSymbol()
 
     def _predict_fish(self, source_input: any) -> None:
         results = self.model.predict(
@@ -138,10 +141,13 @@ class FishSymbolDetection(object):
                 self.stop()
             self.showOutput = False
 
-    def start(self):
+    def start(self, custom_fish_symbol: FishSymbol = None):
         if not self.origin_source_input.videostream:
             self.useScreenshotInput()
-        self.fishsymbol = FishSymbol()
+        if custom_fish_symbol:
+            self.fishsymbol = custom_fish_symbol
+        else:
+            self.fishsymbol = FishSymbol()
 
     def detectFish(self) -> FishSymbol:
         frame = self._nextFrame()
