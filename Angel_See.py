@@ -71,7 +71,7 @@ while True:
     print("Zum Starten x drücken p zum Pausieren")
     while stop == True:
         time.sleep(2)
-
+    keyboard.press_and_release('e')
     fishDetection.start()
     while stop == False:
         # keyboard.press_and_release('e')
@@ -92,7 +92,7 @@ while True:
                 keyboard.press('a')
         else:
             now = time.time()
-            if start and now - start < 1:
+            if start and (now - start) < 3:
                 start = None
                 now = None
                 keyboard.release('a')
