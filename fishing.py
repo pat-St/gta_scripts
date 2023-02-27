@@ -85,6 +85,7 @@ class FishSymbolDetection(object):
 
     def __init__(self, model_path: str = "./assets/model.pt", showOutput: bool = True, custom_fish_symbol: FishSymbol = None):
         self.model = YOLO(model_path)
+        self.model.overrides["verbose"] = False
         self.showOutput = showOutput
         self.origin_source_input = VisualInput()
         if custom_fish_symbol:
@@ -94,15 +95,19 @@ class FishSymbolDetection(object):
 
     def _predict_fish(self, source_input: any) -> None:
         results = self.model.predict(
+            # source='0',
             source=source_input,
             device=0,
             # show=True,
             conf=0.2,
-            iou=0.3,
-            max_det=1,
-            classes=1)
+            # iou=0.5,
+            # max_det=1,
+            # classes=0
+        )
         detected_fishes = [
             result.to("cpu").numpy().boxes for result in results]
+        for result in results:
+            print(result.to("cpu").names)
         # print(detected_fishes[0])
         if len(detected_fishes[0]) > 0:
             # print("has detected")
