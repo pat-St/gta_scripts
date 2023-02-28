@@ -176,8 +176,8 @@ class FishSymbolDetection(object):
         midY = ylen // 2
 
         # print("mitte: x:" + str(midX) + " y:" + str(midY))
-        if self.show_result:
-            cv.imshow('pull-bar', crop_box)
+        # if self.show_result:
+        #     cv.imshow('pull-bar', crop_box)
 
         r, g, b = crop_box[midX, midY]
         # print("r,g,b: ", r, ' ', g, ' ', b)
@@ -222,7 +222,7 @@ class FishSymbolDetection(object):
         # r, g, b = [0, 0, 0]
         # r, g, b == self._crop_plane()
         # print(self._crop_plane())
-        if self._crop_plane()[0] >= 143 and self._crop_plane()[1] >= 97 and self._crop_plane()[2] == 27:
+        if self._crop_plane()[0] >= 143 and self._crop_plane()[1] <= 100 and self._crop_plane()[2] <= 31:
             return True
         return False
 

@@ -26,7 +26,7 @@ keyboard.add_hotkey('p', lambda: stop_event())
 
 fishDetection = FishSymbolDetection(
     model_path=".\\assets\\model2.pt",
-    show_result=True
+    show_result=False
 )
 # model_path=".\\model.pt", show_result=False)
 # fishDetection = FishSymbolDetection(model_path="assets\model.pt")xp
@@ -66,6 +66,7 @@ while True:
             while fishDetection.hasPullingBar():
                 mouse.press('left')
                 time.sleep(0.5)
+            time.sleep(3.2)
             mouse.release('left')
             time.sleep(4)
             print("Fisch eingezogen")
