@@ -1,3 +1,4 @@
+
 import time
 
 import cv2 as cv
@@ -16,14 +17,14 @@ class VisualInput(object):
         if screenshot_input:
             self.set_screenshot(screenshot_input)
 
-    def set_video(self, input_source: number | str):
+    def set_video(self, input_source):
         videostream = cv.VideoCapture(input_source)
         if not videostream.isOpened():
             print("missing video input")
             exit(1)
         self.videostream = videostream
 
-    def set_screenshot(self, screen_area: [number]):
+    def set_screenshot(self, screen_area):
         self.screen_area = screen_area
 
     def next(self):
@@ -32,11 +33,11 @@ class VisualInput(object):
             if not ret:
                 Exception("Non frame detected. End of stream")
             # https://stackoverflow.com/a/39744436
-            lab = cv.cvtColor(frame, cv.COLOR_BGR2LAB)
-            clahe = cv.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
-            lab[:, :, 0] = clahe.apply(lab[:, :, 0])
-            enhanced_img = cv.cvtColor(lab, cv.COLOR_LAB2BGR)
-            self.current_image = enhanced_img
+            # lab = cv.cvtColor(frame, cv.COLOR_BGR2LAB)
+            # clahe = cv.createCLAHE(clipLimit=2.5, tileGridSize=(8, 8))
+            # lab[:, :, 0] = clahe.apply(lab[:, :, 0])
+            # enhanced_img = cv.cvtColor(lab, cv.COLOR_LAB2BGR)
+            self.current_image = frame
         elif self.screen_area:
             screenshot = ImageGrab.grab(
                 bbox=self.screen_area,
@@ -65,7 +66,7 @@ class FishSymbol(object):
         self.right = False
         self.threshold = threshold
 
-    def _change_dir(self, new_x_pos: number):
+    def _change_dir(self, new_x_pos):
         dist = self.x - new_x_pos
         if (abs(dist) < self.threshold):
             return False
@@ -105,7 +106,7 @@ class FishSymbolDetection(object):
                  model_path: str = "./assets/model.pt",
                  show_result: bool = True,
                  custom_fish_symbol: FishSymbol = FishSymbol(),
-                 pulling_bar_position: [number] = [1867, 1000, 1890, 1010]):
+                 pulling_bar_position=[1867, 1003, 1870, 1007]):
         self.model = YOLO(model_path)
         self.model.info(verbose=False)
         self.model.overrides["verbose"] = False
@@ -120,9 +121,9 @@ class FishSymbolDetection(object):
             source=source_input,
             device=0,
             # show=True,
-            conf=0.2,
+            conf=0.3,
             # iou=0.5,
-            # max_det=1,
+            max_det=1,
             # classes=0
         )
         detected_fishes = [
@@ -160,23 +161,26 @@ class FishSymbolDetection(object):
 
     def _crop_plane(self):
         frame = self._next_frame()
-        array_image = np.array(frame)
-
+        array_image = np.asarray(frame)
+        # print(array_image)
         x_start, y_start, x_stop, y_stop = self.pulling_bar_position
+        # crop_box = np.zeros((1080, 1920, 3), np.uint8)
+        crop_box = array_image[y_start:y_stop, x_start:x_stop, :]
 
-        crop_box = array_image[x_start:x_stop, y_start:y_stop]
-
-        print(str(crop_box))
+        # print(str(crop_box))
         xlen = len(crop_box)
         ylen = len(crop_box[0])
 
-        print("x:" + str(xlen) + " y:" + str(ylen))
+        # print("x:" + str(xlen) + " y:" + str(ylen))
         midX = xlen // 2
         midY = ylen // 2
 
-        print("mitte: x:" + str(midX) + " y:" + str(midY))
+        # print("mitte: x:" + str(midX) + " y:" + str(midY))
+        if self.show_result:
+            cv.imshow('pull-bar', crop_box)
 
         r, g, b = crop_box[midX, midY]
+        # print("r,g,b: ", r, ' ', g, ' ', b)
         return [r, g, b]
 
     def use_video_input(self, input_source="./assets/fischen_short.mp4"):
@@ -215,10 +219,12 @@ class FishSymbolDetection(object):
         return self.fishsymbol
 
     def hasPullingBar(self) -> bool:
-        return [27, 97, 143] == self._crop_plane()
-
-    def finishedPullingBar() -> bool:
-        return [79, 184, 255] == self._crop_plane()
+        # r, g, b = [0, 0, 0]
+        # r, g, b == self._crop_plane()
+        # print(self._crop_plane())
+        if self._crop_plane()[0] >= 143 and self._crop_plane()[1] >= 97 and self._crop_plane()[2] == 27:
+            return True
+        return False
 
     def stop(self):
         cv.destroyAllWindows()

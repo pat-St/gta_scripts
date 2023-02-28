@@ -1,42 +1,12 @@
 import time
 
 import keyboard
-
+import mouse
 
 from fishing import FishSymbolDetection
 
 global stop
 stop = True
-
-
-def isWeiss(game_coords):
-    screenshot = ImageGrab.grab(
-        bbox=game_coords, include_layered_windows=True, all_screens=True)
-    erkennung = np.array(screenshot)
-    print(str(screenshot))
-    xlen = len(erkennung)
-    ylen = len(erkennung[0])
-
-    print("x:" + str(xlen) + " y:" + str(ylen))
-    midX = xlen // 2
-    midY = ylen // 2
-
-    print("mitte: x:" + str(midX) + " y:" + str(midY))
-
-    r = erkennung[midX, midY][0]
-    g = erkennung[midX, midY][1]
-    b = erkennung[midX, midY][2]
-    if [27, 97, 143] == [r, g, b]:
-        print("Fisch einziehen ")
-        keyboard.release('a')
-        keyboard.release('d')
-        mouse.press('left')
-        time.sleep(17)
-        mouse.release('left')
-        time.sleep(4)
-        keyboard.press_and_release('e')
-        return True
-    return False
 
 
 def start_event():
@@ -56,8 +26,7 @@ keyboard.add_hotkey('p', lambda: stop_event())
 
 fishDetection = FishSymbolDetection(
     model_path=".\\assets\\model2.pt",
-    show_result=False,
-    pulling_bar_position=[1867, 1000, 1890, 1010]
+    show_result=True
 )
 # model_path=".\\model.pt", show_result=False)
 # fishDetection = FishSymbolDetection(model_path="assets\model.pt")xp
@@ -94,19 +63,18 @@ while True:
             print("Fisch einziehen")
             keyboard.release('a')
             keyboard.release('d')
-            mouse.press('left')
-        elif fishDetection.finishedPullingBar():
-            print("Fisch einziehen beenden")
-            time.sleep(0.5)
+            while fishDetection.hasPullingBar():
+                mouse.press('left')
+                time.sleep(0.5)
             mouse.release('left')
-            time.sleep(0.5)
+            time.sleep(4)
             print("Fisch eingezogen")
             break
         else:
-            if start and (time.time() - start) > 5:
+            if start and (time.time() - start) > 15:
                 print("Zeit überschritten")
                 break
-        print("Warte auf nächstes Bild")
+        # print("Warte auf nächstes Bild")
         time.sleep(1)
     fishDetection.stop()
     print("Alle Tasten werden losgelassen")
