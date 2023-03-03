@@ -41,6 +41,18 @@ Check the current version, open a terminal and execute `python -V`.
 
 Install all required dependencies by executing: `pip install -r < requirements.txt`
 
+## Train your model ##
+
+1. Edit the `.env` file and insert your **export api key** from [Roboflow](https://docs.roboflow.com/exporting-data#export-with-the-python-package)
+
+2. Now execute the `train.ipynb` file with Jupyter Notebook.
+
+3. The final model can be found under `runs/train/weight/best.pt`.
+
+4. Copy the model into the `assets` folder.
+
+5. Finally, update the *fishing job* Parameter.
+
 unzip model:
 
 ```
