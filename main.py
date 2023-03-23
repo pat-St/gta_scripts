@@ -2,6 +2,7 @@ import importlib
 
 scripts = [
     ["exit", "", ""],
+    ["dummy", "dummy_job", "jobs"],
     ["fishing", "fishing_job", "jobs"],
     ["afk-bot", "afk-bot_job", "jobs"],
     ["stone-mining", "stone-mining_job", "jobs"],

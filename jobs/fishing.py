@@ -114,7 +114,7 @@ class FishSymbolDetection(object):
         results = self.model.predict(
             # source='0',
             source=source_input,
-            device=0,
+            device="CPU",
             # show=True,
             conf=0.3,
             # iou=0.5,
