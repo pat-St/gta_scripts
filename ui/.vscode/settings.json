@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        ".htaccess": "plaintext",
+        "*.yaml": "ansible",
+        "*.rule": "yaml",
+        "iostream": "cpp"
+    }
+}
