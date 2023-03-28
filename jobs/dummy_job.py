@@ -1,13 +1,16 @@
 # from utils.events import *
-from utils.events import active_job, quit_job, sleep
+import os
+import sys
 
+import time
+# SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+# sys.path.append(os.path.dirname(SCRIPT_DIR))
+
+# from utils.events import active_job, quit_job, sleep
+
+# print(SCRIPT_DIR)
 print("This is a dummy job")
-while not quit_job():
-    # warten bis eingabe dann start
-    print("Zum Starten x drücken p zum Pausieren")
-    while not active_job() and not quit_job():
-        wait(2)
-
-    while active_job():
-        print("Next round")
-        sleep(2)
+# while True:
+    # while True:
+time.sleep(2)
+print("Next round")
