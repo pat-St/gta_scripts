@@ -53,7 +53,7 @@ def drücken():
 
 def drückenboost():
         mouse.press('left')
-        time.sleep(2.6)
+        time.sleep(2.5)
         mouse.release('left')
         print("Taste wird gehalten")
 
@@ -82,7 +82,7 @@ while True:
         time.sleep(1)
 
     while stop == False:
-        mouse.move(300, 600, absolute=True)
+        mouse.move(2218, 600, absolute=True)
         
         if IS_BOOST:
             drückenboost()
@@ -96,7 +96,7 @@ while True:
             time.sleep(1)
             print("Warte")
 
-        mouse.move(400, 600, absolute=True)
+        mouse.move(2323, 600, absolute=True)
         if IS_BOOST == False:
             drücken()
         else:
@@ -109,7 +109,7 @@ while True:
             time.sleep(1)
             print("Warte")
 
-        mouse.move(500, 600, absolute=True)
+        mouse.move(2428, 600, absolute=True)
         if IS_BOOST == False:
             drücken()
         else:
@@ -122,7 +122,7 @@ while True:
             time.sleep(1)
             print("Warte")
 
-        mouse.move(600, 600, absolute=True)
+        mouse.move(2532, 600, absolute=True)
         if IS_BOOST == False:
             drücken()
         else:

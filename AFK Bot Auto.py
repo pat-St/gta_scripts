@@ -9,7 +9,26 @@ stop = True
 
 
 def warten():
-    time.sleep(20)
+    print("5 Sekunden Pause")
+    time.sleep(5)
+
+def PressA():
+    keyboard.press('a')
+    time.sleep(0.4)
+    keyboard.release('a')
+    print("A wird gedrückt")
+
+def PressD():
+    keyboard.press('d')
+    time.sleep(0.4)
+    keyboard.release('d')
+    print("D wird gedrückt")
+
+def PressW():
+    keyboard.press('w')
+    time.sleep(0.4)
+    keyboard.release('w')   
+    print("W wird gedrückt") 
 
 
 def start_event(): 
@@ -35,35 +54,21 @@ while True:
         time.sleep(1)
 
     while stop == False:
-        # keyboard.press('e')
+        warten()
 
-        keyboard.press('w')
-        if stop == True:
-            break
-        time.sleep(0.2)
-        keyboard.release('w')
-
-        if stop == True:
-            break
+        PressA()
 
         warten()
-        print("a wird gedrückt")
-        keyboard.press('a')
+
         if stop == True:
             break
 
-        time.sleep(0.4)
-        keyboard.release('a')
+        PressD()
+
+        warten()
+
+        PressW()
+        
         if stop == True:
             break
 
-        warten()
-        print("d wird gedrückt")
-        keyboard.press('d')
-        if stop == True:
-            break
-        time.sleep(0.4)
-        keyboard.release('d')
-        if stop == True:
-            break
-        warten()

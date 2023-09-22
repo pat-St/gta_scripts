@@ -32,13 +32,19 @@ while True:
 
     while stop == False:
 
-        # mouse.click('left')
         print("E wird gehalten")
-       # time.sleep(6)
+
         pyautogui.keyDown('e')
+
+        if stop == True:
+            print("wait")
+
         time.sleep(5)
+
         print("Taste wird losgelassen")
+
         pyautogui.keyUp('e', _pause=False)
 
         print("Warte bis nächste runde")
+        
         time.sleep(7)
