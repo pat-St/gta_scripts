@@ -1,12 +1,14 @@
-import os 
+import os
+import subprocess
+import time
+from pathlib import Path
+
 import keyboard
 import mouse
-import time
-import pyautogui
-from pathlib import Path
-import subprocess
-from PIL import ImageGrab
 import numpy as np
+import pyautogui
+from PIL import ImageGrab
+
 
 def password():
     print("Password eingabe wurde erkannt.")
@@ -203,7 +205,6 @@ def solangeSpielAktivIst():
             warten()
             PressW()
 
-# alle 5 sekunden überpüfren wenn 3 minuten um dann weiter/ weiter wenn loginscreen da ist
 def loginfertig():
     for y in range(150): 
         print("Warte auf login screen")

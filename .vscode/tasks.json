@@ -1,0 +1,17 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "EXE AFK-gamestart",
+			"type": "shell",
+			"command": "pyinstaller.exe -F '.\\AFK-gamestart.py'",
+			"problemMatcher": []
+		},
+		{
+			"label": "EXE Olpumpen",
+			"type": "shell",
+			"command": "pyinstaller.exe -F '.\\Olpumpen.py'",
+			"problemMatcher": []
+		}
+	]
+}
