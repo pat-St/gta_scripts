@@ -324,6 +324,7 @@ def solangeSpielAktivIst():
                 time.sleep(300)
 
 
+
 def loginfertig():
     for y in range(150): 
         print("Warte auf login screen")
