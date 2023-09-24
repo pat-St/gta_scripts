@@ -178,6 +178,70 @@ def warten():
     print("10 Sekunden Pause")
     time.sleep(10)
 
+
+def Investion8Stunden():
+    print("Investion 8 Stunden wird angenommen")
+    # handy rausholen
+    time.sleep(1)
+    keyboard.press_and_release('k')
+    time.sleep(3)
+    # investion moven und klicken
+    pyautogui.moveTo(1713, 1009,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # auf tagsüber moven und klicken
+    pyautogui.moveTo(94, 537,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # scrollbar moven und klicken
+    pyautogui.moveTo(1608, 965,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(1)
+    mouse.click('left')
+    time.sleep(3)
+    # 8 stunden invest 
+    pyautogui.moveTo(1451, 866,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # annhemen
+    pyautogui.moveTo(877, 725,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # rausgeben
+    keyboard.press_and_release('esc')
+
+def FamAufgabe4Stunden():
+    print("Familienaufgabe 4 Stunden wird angenommen")
+
+    # Familienaufgabe annhemen
+    time.sleep(1)
+    keyboard.press_and_release('m')
+    time.sleep(3)
+    # auf familie moven
+    pyautogui.moveTo(1087, 866,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # familien aufgabe
+    pyautogui.moveTo(156, 685,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # Scrollbar
+    pyautogui.moveTo(1510, 1051,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+    time.sleep(3)
+    # 4 stunden aufgabe annhemen
+    pyautogui.moveTo(617, 994,duration=0.5)
+    time.sleep(3)
+    mouse.click('left')
+
 global stop
 stop = True
 
@@ -195,6 +259,49 @@ keyboard.add_hotkey('q', lambda: start_event())
 keyboard.add_hotkey('e', lambda: stop_event())
 
 
+# def istEs(hour=0,minute=0):
+#     systemzeit = time.localtime()
+#     # zeit_string = time.strftime("%H:%M:%S", systemzeit)
+#     return systemzeit.tm_hour == hour and systemzeit.tm_min == minute
+
+
+def istImZeitraum(start_time=(0,0),end_time=(0,0)):
+    systemzeit = time.localtime()
+    st = time.localtime()
+    from_start = time.struct_time(
+        (st.tm_year,)
+        + (st.tm_mon,)
+        + (st.tm_mday,)
+        + (start_time[0],)
+        + (start_time[1],)
+        + (0,)
+        + (st.tm_wday,)
+        + (st.tm_yday,)
+        + (st.tm_isdst,)
+    )
+    to_end = time.struct_time(
+        (st.tm_year,)
+        + (st.tm_mon,)
+        + (st.tm_mday,)
+        + (end_time[0],)
+        + (end_time[1],)
+        + (0,)
+        + (st.tm_wday,)
+        + (st.tm_yday,)
+        + (st.tm_isdst,)
+    )
+    # print(time.strftime("%H:%M:%S", systemzeit))
+    # print(time.strftime("%H:%M:%S", from_start))
+    # print(time.strftime("%H:%M:%S", to_end))
+    if time.mktime(systemzeit) < time.mktime(from_start):
+        # zu früh
+        return False
+    if time.mktime(systemzeit) > time.mktime(to_end):
+        # zu spät
+        return False
+    return True
+
+
 def solangeSpielAktivIst():
     print("AFK bot wird gestartet.")
     while isSpielAn([1870, 50, 1890, 60]):
@@ -204,6 +311,18 @@ def solangeSpielAktivIst():
             PressD()
             warten()
             PressW()
+
+            # Tagesinvest
+            if istImZeitraum((5,1),(5,3)):
+                Investion8Stunden()
+                FamAufgabe4Stunden()
+                time.sleep(300)
+
+            # 4 Uhr neustart
+            if istImZeitraum((4,0),(4,2)):
+                SpielBeenden()
+                time.sleep(300)
+
 
 def loginfertig():
     for y in range(150): 
@@ -259,10 +378,10 @@ while True:
        
         RageMPconnenct()
        
-        print("Warten 120 Sekunden.")
-        time.sleep(120)
+        print("Warten 300 Sekunden.")
+        time.sleep(300)
         print("Fertig mit warten, login wird abgefragt.")
-        # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
+        # # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
         loginfertig()
 
         time.sleep(5)
