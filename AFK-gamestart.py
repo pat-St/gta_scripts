@@ -1,13 +1,116 @@
+import json
 import os
 import subprocess
 import time
 from pathlib import Path
 
+import clipboard
 import keyboard
 import mouse
 import numpy as np
 import pyautogui
 from PIL import ImageGrab
+
+    # def get_password(self):
+    #     if os.path.exists("password.json"):
+    #         with open("password.json", "r") as file:
+    #             data = json.load(file)
+    #             return data.get("password")
+    #     else:
+    #         new_password = input("Bitte geben Sie ein neues Passwort ein: ")
+    #         set_password(new_password)
+    #         print("Passwort gespeichert!")
+
+    #     return None
+
+class GamesSaveState:
+    def __init__(self,password = '',path = ''):
+        self.password = password
+        self.path = path
+        self.create()
+
+    def read_password(self):
+        return self.password
+    
+    def read_path(self):
+        return self.path
+    
+    def write_password(self, password):
+        self.password = password
+    
+    def write_path(self, path):
+        self.path = path
+
+    def paste_password(self):
+        keyboard.wait("ctrl+v")
+        new_password = clipboard.paste()
+        self.write_password(new_password)
+
+    def paste_path(self):
+        keyboard.wait("ctrl+v")
+        new_path = clipboard.paste().strip('"')  # Entfernt Anführungszeichen, wenn sie vorhanden sind
+        self.write_path(new_path)
+
+    def password_empty(self):
+        return len(self.password) == 0
+    
+    def path_empty(self):
+        return len(self.path) == 0
+    
+    def create(self):
+        if not os.path.exists(self.config_path()):
+            os.makedirs(self.config_path())
+        if not os.path.exists(self.config_file()):
+            self.save()
+        self.read()
+
+    def write_data(self):
+        return {
+            "password": self.password,
+            "path": self.path
+        }
+
+    def save(self):
+        with open(self.config_file(), "+w") as file:
+                json.dump(self.write_data(), file)
+
+    def read(self):
+        with open(self.config_file(), "r") as file:
+            tmp = json.load(file)
+            self.password = str(tmp['password'])
+            self.path = str(tmp['path'])
+    
+    def config_path(self):
+        return os.path.join(os.getenv('APPDATA'),'grand_afk_game_start')
+
+    def config_file(self):
+        return os.path.join(self.config_path(),'config.json')
+
+def prepare() -> GamesSaveState:
+    speicherZustand = GamesSaveState()
+    if speicherZustand.password_empty():
+        # new_password = input("Bitte geben Sie ein neues Passwort ein: ")
+        print("Bitte schreiben Sie ein Password ein oder (mit STRG+V): ")
+        # speicherZustand.write_password(new_password)
+        speicherZustand.paste_password()
+
+    if speicherZustand.path_empty():
+        # new_path = input("Bitte geben Sie den Pfad ein: ")
+        # speicherZustand.write_path(new_path)
+        print("Bitte schreiben Sie den Pfad zur .exe-Datei ein oder (mit STRG+V): ")
+        speicherZustand.paste_path()
+
+    speicherZustand.save()
+    return speicherZustand
+
+# def set_password(password):
+#     data = {"password": password}
+#     with open("password.json", "w") as file:
+#         json.dump(data, file)
+
+# def schreibpassword(password):
+#     # password = get_password()
+#     keyboard.write(password)
 
 
 def password():
@@ -17,7 +120,9 @@ def password():
     mouse.click('left')
     print("Password wird eingegeben.")
     time.sleep(4)
-    keyboard.write('HIER PASSWORD EINGEBEN') # hier password eingeben 
+    # keyboard.write('HIER PASSWORD EINGEBEN') # hier password eingeben
+    
+    keyboard.write(speicherZustand.read_password())
     time.sleep(4)
     print("Accoount wird eingeloggt.")
     pyautogui.moveTo(651,678,duration=0.5)
@@ -126,7 +231,9 @@ def SpielBeenden():
 
 def startding():
     print("Rage wird gestarted.")
-    os.system("start \"RageMp\" /d C:\\RAGEMP C:\\GrandRPLauncher\\RAGEMP\\updater.exe") #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
+    start_path = speicherZustand.read_path()
+    start_cmd = "start \"RageMp\" /d C:\\RAGEMP {execution_path}".format(execution_path=start_path)
+    os.system(start_cmd) #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
     # print("Programm öffnen")
 
 def RageMPconnenct():
@@ -355,8 +462,9 @@ def escbisspielbeginn():
         else:
             break
 
-while True:
+speicherZustand = prepare()
 
+while True:    
     # warten bis eingabe dann start
     print("Zum Starten q drücken und e zum Pausieren.")
     while stop == True:
@@ -364,9 +472,10 @@ while True:
         # print("warten")
 
     while stop == False:
+        # get_password()
         solangeSpielAktivIst()
 
-        time.sleep(2)
+        time.sleep(5)
         
                 
         SpielBeenden()
@@ -374,7 +483,8 @@ while True:
         time.sleep(5)
        
         startding()
-       
+        # time.sleep(20)
+
         time.sleep(5)
        
         RageMPconnenct()
