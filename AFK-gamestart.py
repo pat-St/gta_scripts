@@ -11,17 +11,22 @@ import numpy as np
 import pyautogui
 from PIL import ImageGrab
 
-    # def get_password(self):
-    #     if os.path.exists("password.json"):
-    #         with open("password.json", "r") as file:
-    #             data = json.load(file)
-    #             return data.get("password")
-    #     else:
-    #         new_password = input("Bitte geben Sie ein neues Passwort ein: ")
-    #         set_password(new_password)
-    #         print("Passwort gespeichert!")
 
-    #     return None
+### Überprüft ob ein Pixel im angegeben Farbraum ist
+## inputPixel = [R,G,B] ; Der pixel der überprüft wird
+## minPixelRange = [R,G,B] ; Der pixel darf nicht unterschreiten
+## maxPixelRange = [R,G,B] ; Der pixel darf nicht überschreiten
+## Return: True wenn in Range, ansonsten False
+def inColorRange(inputPixel,minPixelRange,maxPixelRange):
+    for pos in range(3):
+        # Erster Fall, zu niedrig
+        if inputPixel[pos] < minPixelRange[pos]:
+            return False
+        # Zweiter Fall, zu hoch
+        if inputPixel[pos] > maxPixelRange[pos]:
+            return False
+    return True
+
 
 class GamesSaveState:
     def __init__(self,password = '',path = ''):
@@ -103,17 +108,8 @@ def prepare() -> GamesSaveState:
     speicherZustand.save()
     return speicherZustand
 
-# def set_password(password):
-#     data = {"password": password}
-#     with open("password.json", "w") as file:
-#         json.dump(data, file)
-
-# def schreibpassword(password):
-#     # password = get_password()
-#     keyboard.write(password)
-
-
 def password():
+
     print("Password eingabe wurde erkannt.")
     pyautogui.moveTo(562,566,duration=0.5)
     time.sleep(4)
@@ -130,7 +126,7 @@ def password():
     mouse.click('left')
     print("Login Fertig.")
 
-def ispasswordabfrage(game_coords):
+def pixelabfrage(game_coords):
     screenshot = ImageGrab.grab(
         bbox=game_coords, include_layered_windows=True, all_screens=True)
     erkennung = np.array(screenshot)
@@ -141,116 +137,85 @@ def ispasswordabfrage(game_coords):
     # print("x:" + str(xlen) + " y:" + str(ylen))
     midX = xlen // 2
     midY = ylen // 2
+    return  erkennung[midX, midY]
 
-    # print("mitte: x:" + str(midX) + " y:" + str(midY))
-
-    r = erkennung[midX, midY][0]
-    g = erkennung[midX, midY][1]
-    b = erkennung[midX, midY][2]
-    if 240 <= r and 64 >= g and 90 >= b:
-        print("r:", r,"g:",g,"b:",b)
+def ispasswordabfrage():
+    pixel = pixelabfrage([1410, 600, 1416, 610])
+    minColor = [237, 60, 86] # Minimun farbe range
+    maxColor = [245, 64, 91] # Maximum farbe range
+    if inColorRange(pixel,minColor,maxColor):
+        print(str(pixel))
         return True
-    print("r:", r,"g:",g,"b:",b)
+    print(str(pixel))
     return False
 
-def isSpielAn(game_coords):
-    screenshot = ImageGrab.grab(
-        bbox=game_coords, include_layered_windows=True, all_screens=True)
-    erkennung = np.array(screenshot)
-    # print(str(screenshot))
-    xlen = len(erkennung)
-    ylen = len(erkennung[0])
-
-    # print("x:" + str(xlen) + " y:" + str(ylen))
-    midX = xlen // 2
-    midY = ylen // 2
-
-    # print("mitte: x:" + str(midX) + " y:" + str(midY))
-
-    r = erkennung[midX, midY][0]
-    g = erkennung[midX, midY][1]
-    b = erkennung[midX, midY][2]
-    if [254, 233, 53] == [r, g, b]:
-        print("r:", r,"g:",g,"b:",b)
+def isSpielAn():
+    pixel = pixelabfrage([1870, 50, 1880, 55])
+    minColor = [250, 227, 56]
+    maxColor = [254, 231, 58] # Maximum farbe range
+    if inColorRange(pixel,minColor,maxColor):
+        print(str(pixel))
         return True
-    print("r:", r,"g:",g,"b:",b)
+    print(str(pixel))
     return False
 
-def werberbannerda(game_coords):
-    screenshot = ImageGrab.grab(
-        bbox=game_coords, include_layered_windows=True, all_screens=True)
-    erkennung = np.array(screenshot)
-    xlen = len(erkennung)
-    ylen = len(erkennung[0])
-    midX = xlen // 2
-    midY = ylen // 2
-
-    r = erkennung[midX, midY][0]
-    g = erkennung[midX, midY][1]
-    b = erkennung[midX, midY][2]
-
-    # wenn nicht geld dann wiederholen
-
-    if [254, 233, 53] == [r, g, b]:
-        
+def istgrandcoinssliderda():
+    pixel = pixelabfrage([950, 920, 960, 930])
+    minColor = [238, 184, 59]
+    maxColor = [243, 188, 63] # Maximum farbe range
+    if inColorRange(pixel,minColor,maxColor):
+        print(str(pixel))
         return True
-    # print("r:", r,"g:",g,"b:",b)
+    print(str(pixel))
     return False
 
-def loginscreenfertig(game_coords):
-    screenshot = ImageGrab.grab(
-        bbox=game_coords, include_layered_windows=True, all_screens=True)
-    erkennung = np.array(screenshot)
-    # print(str(screenshot))
-    xlen = len(erkennung)
-    ylen = len(erkennung[0])
-
-    rightX = xlen -1
-    rightY = ylen -1
-
-    r = erkennung[rightX, rightY][0]
-    g = erkennung[rightX, rightY][1]
-    b = erkennung[rightX, rightY][2]
-    if 55 <= r and 48 <= g and 61 >= b: 
-        print("r:", r,"g:",g,"b:",b)
+def IsServerFull():
+    pixel = pixelabfrage([1590, 590, 1600, 600])
+    minColor = [239, 60, 85]
+    maxColor = [246, 65, 91] # Maximum farbe range
+    if inColorRange(pixel,minColor,maxColor):
+        print(str(pixel))
         return True
-    print("r:", r,"g:",g,"b:",b)
+    print(str(pixel))
     return False
 
 def SpielBeenden():
     print("Alle programme werden beendet.")
     os.system("taskkill /f /im GTA5.exe")
-    time.sleep(3)
+    time.sleep(5)
     os.system("taskkill /f /im Launcher.exe")
-    time.sleep(3)
+    time.sleep(5)
     os.system("taskkill /f /im LauncherPatcher.exe")
-    time.sleep(3)
+    time.sleep(5)
     os.system("taskkill /f /im ragemp_v.exe")
-    time.sleep(3)
+    time.sleep(5)
     os.system("taskkill /f /im PlayGTAV.exe")
+    time.sleep(5)
+    os.system("taskkill /f /im updater.exe")
 
 def startding():
     print("Rage wird gestarted.")
     start_path = speicherZustand.read_path()
     start_cmd = "start \"RageMp\" /d C:\\RAGEMP {execution_path}".format(execution_path=start_path)
     os.system(start_cmd) #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
+    # os.system("switch.bat \"RageMp\"") #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
     # print("Programm öffnen")
 
 def RageMPconnenct():
     print("Auf Grand connecten.")
     pyautogui.moveTo(1357,217,duration=0.5)
-    time.sleep(2)
+    time.sleep(5)
     mouse.click('left')
-    time.sleep(2)
+    time.sleep(5)
     pyautogui.moveTo(864,557,duration=0.5)
-    time.sleep(2)
+    time.sleep(5)
     mouse.click('left')
     mouse.click('left')
     mouse.click('left')
-    time.sleep(2)
+    time.sleep(5)
     keyboard.write("de.gta5grand.com")
     pyautogui.moveTo(1146,563,duration=0.5)
-    time.sleep(2)
+    time.sleep(5)
     mouse.click('left')
 
 def SpawnPunkt():
@@ -285,6 +250,27 @@ def warten():
     print("10 Sekunden Pause")
     time.sleep(10)
 
+def GrandCoinSlider20hours():
+    # investion moven und klicken
+    if istgrandcoinssliderda():
+        print("Grand Coins erkannt")
+        pyautogui.moveTo(950, 804,duration=0.5)# auf dem slider ziehen
+        time.sleep(3)
+        pyautogui.dragTo(956, 329, 1, button='left') # 
+        time.sleep(3)
+        pyautogui.moveTo(938, 941) # auf fertig drücken
+        time.sleep(3)
+        mouse.click('left')
+
+def escbis20sdtSlider():
+    for x in range(10): 
+        if not istgrandcoinssliderda():
+            print("Esc bis Grandcoinslider")
+            keyboard.press_and_release('esc')
+            time.sleep(2)
+        else:
+            print("Grand coin Slider erkannt")
+            break
 
 def Investion8Stunden():
     print("Investion 8 Stunden wird angenommen")
@@ -365,13 +351,6 @@ def stop_event():
 keyboard.add_hotkey('q', lambda: start_event())
 keyboard.add_hotkey('e', lambda: stop_event())
 
-
-# def istEs(hour=0,minute=0):
-#     systemzeit = time.localtime()
-#     # zeit_string = time.strftime("%H:%M:%S", systemzeit)
-#     return systemzeit.tm_hour == hour and systemzeit.tm_min == minute
-
-
 def istImZeitraum(start_time=(0,0),end_time=(0,0)):
     systemzeit = time.localtime()
     st = time.localtime()
@@ -408,10 +387,9 @@ def istImZeitraum(start_time=(0,0),end_time=(0,0)):
         return False
     return True
 
-
 def solangeSpielAktivIst():
     print("AFK bot wird gestartet.")
-    while isSpielAn([1870, 50, 1890, 60]):
+    while isSpielAn():
             print("Spiel erkannt")
             PressA()
             warten()
@@ -424,43 +402,58 @@ def solangeSpielAktivIst():
                 Investion8Stunden()
                 FamAufgabe4Stunden()
                 time.sleep(300)
+                escbisspielbeginn()
 
             # 4 Uhr neustart
             if istImZeitraum((4,0),(4,2)):
                 SpielBeenden()
                 time.sleep(300)
-
-
-
-def loginfertig():
-    for y in range(150): 
-        print("Warte auf login screen")
-        # if loginscreenfertig([900, 600, 953, 688]):
-        #     print("Login erknannt")
-        #     time.sleep(15)
-        #     SpawnPunkt()
-        #     time.sleep(5)
-        #     escbisspielbeginn()
-        #     break
-        if ispasswordabfrage([1410, 600, 1416, 610]):
-            # print("Password eingabe erkannt")
-            time.sleep(5)
-            password()
-            time.sleep(5)
-            SpawnPunkt()
-            time.sleep(5)
-            escbisspielbeginn()
-            break
-        time.sleep(1)
-
+                escbisspielbeginn()
 
 def escbisspielbeginn():
     for x in range(10): 
-        if not werberbannerda([1870, 30, 1900, 60]):
+        if not isSpielAn():
+            print("ESC bis im zum AFK Botten")
             keyboard.press_and_release('esc')
             time.sleep(2)
         else:
             break
+
+def IstServerFull():
+    for v in range(15):
+        if IsServerFull():
+            print("Server ist überfüllt. Erneuter Login wird durchgeführt.")
+            time.sleep(10)
+            pyautogui.moveTo(651,678,duration=0.5)
+            time.sleep(4)
+            mouse.click('left')
+        else:
+            break
+            
+        time.sleep(0.5)
+
+
+def loginfertig():
+    for y in range(300): 
+        print("Warte auf login screen")
+       
+        if ispasswordabfrage():
+            print("Password eingabe erkannt")
+            time.sleep(5)
+            password()
+            IstServerFull()       
+            time.sleep(5)
+            SpawnPunkt()
+            time.sleep(5)
+            escbis20sdtSlider()
+            time.sleep(5)
+            GrandCoinSlider20hours()
+            time.sleep(5)
+            escbisspielbeginn()
+            time.sleep(5)
+
+            break
+        time.sleep(1)
 
 speicherZustand = prepare()
 
@@ -472,29 +465,18 @@ while True:
         # print("warten")
 
     while stop == False:
-        # get_password()
         solangeSpielAktivIst()
-
-        time.sleep(5)
-        
-                
-        SpielBeenden()
-       
-        time.sleep(5)
-       
+        time.sleep(5)          
+        SpielBeenden()       
+        time.sleep(5)   
         startding()
-        # time.sleep(20)
-
-        time.sleep(5)
-       
-        RageMPconnenct()
-       
+        time.sleep(5)     
+        RageMPconnenct()     
         print("Warten 300 Sekunden.")
-        time.sleep(300)
+        time.sleep(150)
         print("Fertig mit warten, login wird abgefragt.")
         # # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
         loginfertig()
-
         time.sleep(5)
 
 
