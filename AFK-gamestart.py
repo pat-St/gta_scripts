@@ -12,6 +12,18 @@ import pyautogui
 from PIL import ImageGrab
 
 
+def log_to_file(message):
+    with open('logfile.txt', 'a') as file:
+        timestamp = time.strftime("%d.%m.%Y / %H:%M", time.localtime())
+        log_message = f"{timestamp} - {message}\n"
+        file.write(log_message)
+
+
+def print_hour_and_minute():
+    current_time = time.localtime()
+    formatted_time = time.strftime("%d.%m.%Y / %H:%M", current_time)
+    print(f"Aktuelles Datum, Stunde und Minute: {formatted_time} Uhr.")
+
 ### Überprüft ob ein Pixel im angegeben Farbraum ist
 ## inputPixel = [R,G,B] ; Der pixel der überprüft wird
 ## minPixelRange = [R,G,B] ; Der pixel darf nicht unterschreiten
@@ -144,43 +156,45 @@ def ispasswordabfrage():
     minColor = [237, 60, 86] # Minimun farbe range
     maxColor = [245, 64, 91] # Maximum farbe range
     if inColorRange(pixel,minColor,maxColor):
-        print(str(pixel))
+        log_to_file(f"Password eingabe erkannt. R:G:B {pixel}")
         return True
-    print(str(pixel))
+    log_to_file(f"keine Password eingabe erkannt. R:G:B {pixel}")
     return False
 
 def isSpielAn():
     pixel = pixelabfrage([1870, 50, 1880, 55])
-    minColor = [250, 227, 56]
-    maxColor = [254, 231, 58] # Maximum farbe range
+    minColor = [249, 227, 52]
+    maxColor = [255, 234, 58] # Maximum farbe range
     if inColorRange(pixel,minColor,maxColor):
-        print(str(pixel))
+        log_to_file(f"Gelbe 1 erkannt. R:G:B {pixel}")
         return True
-    print(str(pixel))
+    log_to_file(f"Gelbe 1 nicht erkannt. R:G:B {pixel}")
     return False
 
 def istgrandcoinssliderda():
     pixel = pixelabfrage([950, 920, 960, 930])
-    minColor = [238, 184, 59]
-    maxColor = [243, 188, 63] # Maximum farbe range
+    minColor = [239, 184, 36]
+    maxColor = [245, 188, 40] # Maximum farbe range
     if inColorRange(pixel,minColor,maxColor):
-        print(str(pixel))
+        log_to_file(f"grand coins slider erkannt. R:G:B {pixel}")
         return True
-    print(str(pixel))
+    log_to_file(f"Grandcoin slider nicht erkannt. R:G:B {pixel}")
     return False
 
 def IsServerFull():
-    pixel = pixelabfrage([1590, 590, 1600, 600])
-    minColor = [239, 60, 85]
-    maxColor = [246, 65, 91] # Maximum farbe range
+    pixel = pixelabfrage([1410, 600, 1416, 610])
+    minColor = [237, 60, 86] # Minimun farbe range
+    maxColor = [245, 64, 91] # Maximum farbe range
     if inColorRange(pixel,minColor,maxColor):
-        print(str(pixel))
+        log_to_file(f"Server Full. R:G:B {pixel}")
         return True
-    print(str(pixel))
+    log_to_file(f"Server nicht Full. R:G:B {pixel}")
     return False
 
 def SpielBeenden():
     print("Alle programme werden beendet.")
+    log_to_file("Alle programme werden Beendet")
+    print_hour_and_minute()
     os.system("taskkill /f /im GTA5.exe")
     time.sleep(5)
     os.system("taskkill /f /im Launcher.exe")
@@ -194,15 +208,18 @@ def SpielBeenden():
     os.system("taskkill /f /im updater.exe")
 
 def startding():
+    log_to_file("RageMP wird gestart")
     print("Rage wird gestarted.")
+    print_hour_and_minute()
     start_path = speicherZustand.read_path()
     start_cmd = "start \"RageMp\" /d C:\\RAGEMP {execution_path}".format(execution_path=start_path)
-    os.system(start_cmd) #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
-    # os.system("switch.bat \"RageMp\"") #Pfad von rage updater mit doppel // ,weil wenn nur 1 / dann wird es als leerrzeichen erkannt.
-    # print("Programm öffnen")
+    os.system(start_cmd) 
+    # os.system("switch.bat \"RageMp\"") 
 
 def RageMPconnenct():
+    log_to_file("Ragemp Connect")
     print("Auf Grand connecten.")
+    print_hour_and_minute()
     pyautogui.moveTo(1357,217,duration=0.5)
     time.sleep(5)
     mouse.click('left')
@@ -219,14 +236,12 @@ def RageMPconnenct():
     mouse.click('left')
 
 def SpawnPunkt():
+    log_to_file("Wird bei familie gespawnt")
     print("Spawnpunkt am Familienhaus wird ausgewählt.")
+    print_hour_and_minute()
     pyautogui.moveTo(197,595,duration=0.5)
     time.sleep(10)
     mouse.click('left')
-    # time.sleep(3)
-    # keyboard.press_and_release('esc')
-    # time.sleep(2)
-    # keyboard.press_and_release('esc')
 
 def PressA():
     keyboard.press('a')
@@ -253,6 +268,7 @@ def warten():
 def GrandCoinSlider20hours():
     # investion moven und klicken
     if istgrandcoinssliderda():
+        log_to_file("Grand coin slider erkannt")
         print("Grand Coins erkannt")
         pyautogui.moveTo(950, 804,duration=0.5)# auf dem slider ziehen
         time.sleep(3)
@@ -265,15 +281,18 @@ def GrandCoinSlider20hours():
 def escbis20sdtSlider():
     for x in range(10): 
         if not istgrandcoinssliderda():
+            log_to_file("Kein grandcoin slider erkannt")
             print("Esc bis Grandcoinslider")
+            print_hour_and_minute()
             keyboard.press_and_release('esc')
             time.sleep(2)
         else:
-            print("Grand coin Slider erkannt")
+            print_hour_and_minute()
             break
 
 def Investion8Stunden():
     print("Investion 8 Stunden wird angenommen")
+    log_to_file("8 Stunden invest wird angenommen")
     # handy rausholen
     time.sleep(1)
     keyboard.press_and_release('k')
@@ -310,6 +329,7 @@ def Investion8Stunden():
 
 def FamAufgabe4Stunden():
     print("Familienaufgabe 4 Stunden wird angenommen")
+    log_to_file("Familienaufgabe 4 Stunden wird angenommen")
 
     # Familienaufgabe annhemen
     time.sleep(1)
@@ -342,11 +362,13 @@ def start_event():
     global stop
     stop = False
     print("Start")
+    log_to_file("AFK Bot Programm start mit q taste")
 
 def stop_event():
     global stop
     stop = True
     print("Wird Pausiert")
+    log_to_file("AFK Bot Programm stop mit e taste")
 
 keyboard.add_hotkey('q', lambda: start_event())
 keyboard.add_hotkey('e', lambda: stop_event())
@@ -388,8 +410,10 @@ def istImZeitraum(start_time=(0,0),end_time=(0,0)):
     return True
 
 def solangeSpielAktivIst():
-    print("AFK bot wird gestartet.")
+    print_hour_and_minute()
     while isSpielAn():
+            print_hour_and_minute()
+            log_to_file("Ist im Spiel")
             print("Spiel erkannt")
             PressA()
             warten()
@@ -399,13 +423,18 @@ def solangeSpielAktivIst():
 
             # Tagesinvest
             if istImZeitraum((5,1),(5,3)):
+                log_to_file("5 Uhr Invest und Fam")
                 Investion8Stunden()
+                print_hour_and_minute()
                 FamAufgabe4Stunden()
+                print_hour_and_minute()
                 time.sleep(300)
                 escbisspielbeginn()
 
             # 4 Uhr neustart
             if istImZeitraum((4,0),(4,2)):
+                log_to_file("4 Uhr Server Neustart")
+                print_hour_and_minute()
                 SpielBeenden()
                 time.sleep(300)
                 escbisspielbeginn()
@@ -413,21 +442,27 @@ def solangeSpielAktivIst():
 def escbisspielbeginn():
     for x in range(10): 
         if not isSpielAn():
+            log_to_file("ESC bis im spiel")
+            print_hour_and_minute()
             print("ESC bis im zum AFK Botten")
             keyboard.press_and_release('esc')
             time.sleep(2)
         else:
+            print_hour_and_minute()
             break
 
 def IstServerFull():
     for v in range(15):
         if IsServerFull():
+            log_to_file("Server Full erneut login")
+            print_hour_and_minute()
             print("Server ist überfüllt. Erneuter Login wird durchgeführt.")
             time.sleep(10)
             pyautogui.moveTo(651,678,duration=0.5)
             time.sleep(4)
             mouse.click('left')
         else:
+            print_hour_and_minute()
             break
             
         time.sleep(0.5)
@@ -436,12 +471,14 @@ def IstServerFull():
 def loginfertig():
     for y in range(300): 
         print("Warte auf login screen")
+        print_hour_and_minute()
        
         if ispasswordabfrage():
             print("Password eingabe erkannt")
+            print_hour_and_minute()
             time.sleep(5)
             password()
-            IstServerFull()       
+            IstServerFull()
             time.sleep(5)
             SpawnPunkt()
             time.sleep(5)
@@ -451,7 +488,6 @@ def loginfertig():
             time.sleep(5)
             escbisspielbeginn()
             time.sleep(5)
-
             break
         time.sleep(1)
 
@@ -471,13 +507,14 @@ while True:
         time.sleep(5)   
         startding()
         time.sleep(5)     
-        RageMPconnenct()     
+        RageMPconnenct()
         print("Warten 300 Sekunden.")
-        time.sleep(150)
+        time.sleep(300)
         print("Fertig mit warten, login wird abgefragt.")
         # # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
         loginfertig()
         time.sleep(5)
+
 
 
     
