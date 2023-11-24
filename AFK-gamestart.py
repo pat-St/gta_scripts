@@ -11,6 +11,8 @@ import numpy as np
 import pyautogui
 from PIL import ImageGrab
 
+pyautogui.FAILSAFE = False
+
 
 def log_to_file(message):
     with open('logfile.txt', 'a') as file:
@@ -124,17 +126,17 @@ def password():
 
     print("Password eingabe wurde erkannt.")
     pyautogui.moveTo(562,566,duration=0.5)
-    time.sleep(4)
+    warten()
     mouse.click('left')
     print("Password wird eingegeben.")
-    time.sleep(4)
+    warten()
     # keyboard.write('HIER PASSWORD EINGEBEN') # hier password eingeben
     
     keyboard.write(speicherZustand.read_password())
-    time.sleep(4)
+    warten()
     print("Accoount wird eingeloggt.")
     pyautogui.moveTo(651,678,duration=0.5)
-    time.sleep(4)
+    warten()
     mouse.click('left')
     print("Login Fertig.")
 
@@ -196,15 +198,15 @@ def SpielBeenden():
     log_to_file("Alle programme werden Beendet")
     print_hour_and_minute()
     os.system("taskkill /f /im GTA5.exe")
-    time.sleep(5)
+    warten()
     os.system("taskkill /f /im Launcher.exe")
-    time.sleep(5)
+    warten()
     os.system("taskkill /f /im LauncherPatcher.exe")
-    time.sleep(5)
+    warten()
     os.system("taskkill /f /im ragemp_v.exe")
-    time.sleep(5)
+    warten()
     os.system("taskkill /f /im PlayGTAV.exe")
-    time.sleep(5)
+    warten()
     os.system("taskkill /f /im updater.exe")
 
 def startding():
@@ -221,18 +223,18 @@ def RageMPconnenct():
     print("Auf Grand connecten.")
     print_hour_and_minute()
     pyautogui.moveTo(1357,217,duration=0.5)
-    time.sleep(5)
+    warten()
     mouse.click('left')
-    time.sleep(5)
+    warten()
     pyautogui.moveTo(864,557,duration=0.5)
-    time.sleep(5)
+    warten()
     mouse.click('left')
     mouse.click('left')
     mouse.click('left')
-    time.sleep(5)
+    warten()
     keyboard.write("de.gta5grand.com")
     pyautogui.moveTo(1146,563,duration=0.5)
-    time.sleep(5)
+    warten()
     mouse.click('left')
 
 def SpawnPunkt():
@@ -240,26 +242,32 @@ def SpawnPunkt():
     print("Spawnpunkt am Familienhaus wird ausgewählt.")
     print_hour_and_minute()
     pyautogui.moveTo(197,595,duration=0.5)
-    time.sleep(10)
+    warten()
     mouse.click('left')
-
-def PressA():
-    keyboard.press('a')
-    time.sleep(0.1)
-    keyboard.release('a')
-    print("A wird gedrückt")
-
-def PressD():
-    keyboard.press('d')
-    time.sleep(0.1)
-    keyboard.release('d')
-    print("D wird gedrückt")
 
 def PressW():
     keyboard.press('w')
-    time.sleep(0.1)
+    time.sleep(0.2)
     keyboard.release('w')   
     print("W wird gedrückt") 
+
+def PressA():
+    keyboard.press('a')
+    time.sleep(0.2)
+    keyboard.release('a')
+    print("A wird gedrückt")
+
+def PressS():
+    keyboard.press('s')
+    time.sleep(0.2)
+    keyboard.release('s')
+    print("D wird gedrückt")
+
+def PressD():
+    keyboard.press('d')
+    time.sleep(0.2)
+    keyboard.release('d')
+    print("D wird gedrückt")
 
 def warten():
     print("10 Sekunden Pause")
@@ -271,11 +279,11 @@ def GrandCoinSlider20hours():
         log_to_file("Grand coin slider erkannt")
         print("Grand Coins erkannt")
         pyautogui.moveTo(950, 804,duration=0.5)# auf dem slider ziehen
-        time.sleep(3)
+        warten()
         pyautogui.dragTo(956, 329, 1, button='left') # 
-        time.sleep(3)
+        warten()
         pyautogui.moveTo(938, 941) # auf fertig drücken
-        time.sleep(3)
+        warten()
         mouse.click('left')
 
 def escbis20sdtSlider():
@@ -285,7 +293,7 @@ def escbis20sdtSlider():
             print("Esc bis Grandcoinslider")
             print_hour_and_minute()
             keyboard.press_and_release('esc')
-            time.sleep(2)
+            warten()
         else:
             print_hour_and_minute()
             break
@@ -294,36 +302,36 @@ def Investion8Stunden():
     print("Investion 8 Stunden wird angenommen")
     log_to_file("8 Stunden invest wird angenommen")
     # handy rausholen
-    time.sleep(1)
+    warten()
     keyboard.press_and_release('k')
-    time.sleep(3)
+    warten()
     # investion moven und klicken
     pyautogui.moveTo(1713, 1009,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # auf tagsüber moven und klicken
     pyautogui.moveTo(94, 537,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # scrollbar moven und klicken
     pyautogui.moveTo(1608, 965,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(1)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # 8 stunden invest 
     pyautogui.moveTo(1451, 866,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # annhemen
     pyautogui.moveTo(877, 725,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # rausgeben
     keyboard.press_and_release('esc')
 
@@ -332,27 +340,27 @@ def FamAufgabe4Stunden():
     log_to_file("Familienaufgabe 4 Stunden wird angenommen")
 
     # Familienaufgabe annhemen
-    time.sleep(1)
+    warten()
     keyboard.press_and_release('m')
-    time.sleep(3)
+    warten()
     # auf familie moven
     pyautogui.moveTo(1087, 866,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # familien aufgabe
     pyautogui.moveTo(156, 685,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # Scrollbar
     pyautogui.moveTo(1510, 1051,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
-    time.sleep(3)
+    warten()
     # 4 stunden aufgabe annhemen
     pyautogui.moveTo(617, 994,duration=0.5)
-    time.sleep(3)
+    warten()
     mouse.click('left')
 
 global stop
@@ -362,7 +370,7 @@ def start_event():
     global stop
     stop = False
     print("Start")
-    log_to_file("AFK Bot Programm start mit q taste")
+    log_to_file("AFK Bot Programm start mit X taste")
 
 def stop_event():
     global stop
@@ -370,8 +378,9 @@ def stop_event():
     print("Wird Pausiert")
     log_to_file("AFK Bot Programm stop mit e taste")
 
-keyboard.add_hotkey('q', lambda: start_event())
-keyboard.add_hotkey('e', lambda: stop_event())
+keyboard.add_hotkey('x', lambda: start_event())
+# keyboard.add_hotkey('e', lambda: stop_event())
+
 
 def istImZeitraum(start_time=(0,0),end_time=(0,0)):
     systemzeit = time.localtime()
@@ -415,11 +424,14 @@ def solangeSpielAktivIst():
             print_hour_and_minute()
             log_to_file("Ist im Spiel")
             print("Spiel erkannt")
+            PressW()
+            warten()
             PressA()
+            warten()
+            PressS()
             warten()
             PressD()
             warten()
-            PressW()
 
             # Tagesinvest
             if istImZeitraum((5,1),(5,3)):
@@ -436,8 +448,7 @@ def solangeSpielAktivIst():
                 log_to_file("4 Uhr Server Neustart")
                 print_hour_and_minute()
                 SpielBeenden()
-                time.sleep(300)
-                escbisspielbeginn()
+                time.sleep(600)
 
 def escbisspielbeginn():
     for x in range(10): 
@@ -446,7 +457,7 @@ def escbisspielbeginn():
             print_hour_and_minute()
             print("ESC bis im zum AFK Botten")
             keyboard.press_and_release('esc')
-            time.sleep(2)
+            warten()
         else:
             print_hour_and_minute()
             break
@@ -457,9 +468,9 @@ def IstServerFull():
             log_to_file("Server Full erneut login")
             print_hour_and_minute()
             print("Server ist überfüllt. Erneuter Login wird durchgeführt.")
-            time.sleep(10)
+            warten()
             pyautogui.moveTo(651,678,duration=0.5)
-            time.sleep(4)
+            warten()
             mouse.click('left')
         else:
             print_hour_and_minute()
@@ -476,18 +487,18 @@ def loginfertig():
         if ispasswordabfrage():
             print("Password eingabe erkannt")
             print_hour_and_minute()
-            time.sleep(5)
+            warten()
             password()
             IstServerFull()
-            time.sleep(5)
+            warten()
             SpawnPunkt()
-            time.sleep(5)
+            warten()
             escbis20sdtSlider()
-            time.sleep(5)
+            warten()
             GrandCoinSlider20hours()
-            time.sleep(5)
+            warten()
             escbisspielbeginn()
-            time.sleep(5)
+            warten()
             break
         time.sleep(1)
 
@@ -495,27 +506,22 @@ speicherZustand = prepare()
 
 while True:    
     # warten bis eingabe dann start
-    print("Zum Starten q drücken und e zum Pausieren.")
+    print("Zum Starten X drücken")
     while stop == True:
         time.sleep(1)
         # print("warten")
 
     while stop == False:
         solangeSpielAktivIst()
-        time.sleep(5)          
+        warten()          
         SpielBeenden()       
-        time.sleep(5)   
+        warten()   
         startding()
-        time.sleep(5)     
+        warten()     
         RageMPconnenct()
         print("Warten 300 Sekunden.")
         time.sleep(300)
         print("Fertig mit warten, login wird abgefragt.")
         # # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
         loginfertig()
-        time.sleep(5)
-
-
-
-    
-       
+        warten()
