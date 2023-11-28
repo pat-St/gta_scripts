@@ -13,6 +13,14 @@ from PIL import ImageGrab
 
 pyautogui.FAILSAFE = False
 
+##########################################
+# Zeit zwischen Ausführungen
+wait = 15
+
+# zeit wie lange W,A,S,D gedrückt wird
+press = 0.31
+##########################################
+
 
 def log_to_file(message):
     with open('logfile.txt', 'a') as file:
@@ -295,31 +303,31 @@ def SpawnPunkt():
 
 def PressW():
     keyboard.press('w')
-    time.sleep(0.2)
+    time.sleep(press)
     keyboard.release('w')   
     print("W wird gedrückt") 
 
 def PressA():
     keyboard.press('a')
-    time.sleep(0.2)
+    time.sleep(press)
     keyboard.release('a')
     print("A wird gedrückt")
 
 def PressS():
     keyboard.press('s')
-    time.sleep(0.2)
+    time.sleep(press)
     keyboard.release('s')
     print("D wird gedrückt")
 
 def PressD():
     keyboard.press('d')
-    time.sleep(0.2)
+    time.sleep(press)
     keyboard.release('d')
     print("D wird gedrückt")
 
 def warten():
-    print("10 Sekunden Pause")
-    time.sleep(5)
+    print(f"{wait} Sekunden Pause")
+    time.sleep(wait)
 
 def GrandCoinSlider20hours(): #noch nicht fertig
     # investion moven und klicken
@@ -679,9 +687,8 @@ while True:
         startding()
         warten()     
         RageMPconnenct()
-        print("Warten 300 Sekunden.")
-        time.sleep(20)
+        # print("Warten 300 Sekunden.")
+        time.sleep(60)
         print("Fertig mit warten, login wird abgefragt.")
-        # # 240 Sekunden warten bis er grün erkennt dann spawn def ausführen, wenn nicht neustart.
         loginfertig()
         warten()
