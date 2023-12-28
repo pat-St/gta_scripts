@@ -1069,12 +1069,12 @@ def solangeSpielAktivIst():
             print_hour_and_minute()
             log_to_file("Ist im Spiel")
             print("Spiel erkannt")
-            time.sleep(5)
+            time.sleep(3)
             global counter
             counter += 1
             print(counter)
 
-            if counter % 68 == 0:
+            if counter % 113 == 0:
                 print(" Im Counter zählerr")
                 PressW()
                 time.sleep(1)
@@ -1103,16 +1103,16 @@ def solangeSpielAktivIst():
                 SpielBeenden()
                 time.sleep(120)
 
-            if istImZeitraum((20,1),(20,2)):
+            if istImZeitraum((20,1),(20,1)):
                 SpielBeenden()
                 time.sleep(120)
 
-            if istImZeitraum((17,0),(17,2)):
+            if istImZeitraum((17,0),(17,1)):
                 Tagesinvestabholen()
                 escbisspielbeginn()
                 time.sleep(120)
 
-            if istImZeitraum((23,0),(23,2)):
+            if istImZeitraum((23,0),(23,1)):
                 Tagesinvestabholen()
                 escbisspielbeginn()
                 time.sleep(120)
@@ -1121,10 +1121,11 @@ def solangeSpielAktivIst():
                 Geld80std()
                 time.sleep(120)
 
-            if istImZeitraum((12,26),(16,27)):
+            if istImZeitraum((7,26),(7,27)):
                 Hausbezahlen()
                 keyboard.press_and_release('esc')
                 escbisspielbeginn()
+                time.sleep(120)
 
 def escbisspielbeginn():
     for x in range(10): 
@@ -1210,14 +1211,14 @@ while True:
 
     while stop == False:
         solangeSpielAktivIst()
-        # warten()          
-        # SpielBeenden()       
-        # warten()   
-        # startding()
-        # warten()     
-        # RageMPconnenct()
-        # #print("Warten 300 Sekunden.")
-        # time.sleep(60)
-        # print("Fertig mit warten, login wird abgefragt.")
-        # loginfertig()
-        # warten()
+        warten()          
+        SpielBeenden()       
+        warten()   
+        startding()
+        warten()     
+        RageMPconnenct()
+        #print("Warten 300 Sekunden.")
+        time.sleep(60)
+        print("Fertig mit warten, login wird abgefragt.")
+        loginfertig()
+        warten()
