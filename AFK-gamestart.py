@@ -1082,50 +1082,49 @@ def solangeSpielAktivIst():
             
                 counter = 0
 
-            # Tagesinvest
-            if istImZeitraum((5,1),(5,3)):
-                log_to_file("5 Uhr Invest und Fam")
-                Investion8Stunden()
-                print_hour_and_minute()
-                FamAufgabe4Stunden()
-                print_hour_and_minute()
-                time.sleep(300)
-                escbisspielbeginn()
-
-            # 4 Uhr neustart
-            if istImZeitraum((4,0),(4,2)):
+            # Server Neustart
+            if istImZeitraum((4,0),(4,1)):
                 log_to_file("4 Uhr Server Neustart")
                 print_hour_and_minute()
                 SpielBeenden()
                 time.sleep(600)
 
-            if istImZeitraum((15,1),(15,2)):
-                SpielBeenden()
+            # Tagesinvest
+            if istImZeitraum((5,1),(5,3)) or istImZeitraum((5,40),(5,41)):
+                log_to_file("05:01Uhr oder 05:40Uhr Invest und Fam")
+                Investion8Stunden()
+                print_hour_and_minute()
+                FamAufgabe4Stunden()
+                print_hour_and_minute()
                 time.sleep(120)
+                escbisspielbeginn()
 
-            if istImZeitraum((20,1),(20,1)):
-                SpielBeenden()
-                time.sleep(120)
-
-            if istImZeitraum((17,0),(17,1)):
-                Tagesinvestabholen()
+            if istImZeitraum((9,26),(9,27)):
+                Hausbezahlen()
+                keyboard.press_and_release('esc')
                 escbisspielbeginn()
                 time.sleep(120)
 
-            if istImZeitraum((23,0),(23,1)):
+            ## 15 Uhr Relog
+            # 20 Uhr Relog
+            if istImZeitraum((15,1),(15,2)) or istImZeitraum((20,1),(20,1)):
+                log_to_file("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
+                print("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
+                SpielBeenden()
+                time.sleep(120)
+
+            if istImZeitraum((17,0),(17,1)) or istImZeitraum((23,0),(23,1)):
                 Tagesinvestabholen()
                 escbisspielbeginn()
                 time.sleep(120)
 
             if istImZeitraum((18,15),(18,16)):
+                log_to_file("80 Std Abholen ")
+                print("80 Std Abholen")
                 Geld80std()
                 time.sleep(120)
 
-            if istImZeitraum((7,26),(7,27)):
-                Hausbezahlen()
-                keyboard.press_and_release('esc')
-                escbisspielbeginn()
-                time.sleep(120)
+            
 
 def escbisspielbeginn():
     for x in range(10): 
