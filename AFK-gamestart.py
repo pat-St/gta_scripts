@@ -31,12 +31,14 @@ def print_hour_and_minute():
     formatted_time = time.strftime("%d.%m.%Y / %H:%M", current_time)
     print(f"Aktuelles Datum, Stunde und Minute: {formatted_time} Uhr.")
 
-### Überprüft ob ein Pixel im angegeben Farbraum ist
-## inputPixel = [R,G,B] ; Der pixel der überprüft wird
-## minPixelRange = [R,G,B] ; Der pixel darf nicht unterschreiten
-## maxPixelRange = [R,G,B] ; Der pixel darf nicht überschreiten
-## Return: True wenn in Range, ansonsten False
-def inColorRange(inputPixel,minPixelRange,maxPixelRange):
+# Überprüft ob ein Pixel im angegeben Farbraum ist
+# inputPixel = [R,G,B] ; Der pixel der überprüft wird
+# minPixelRange = [R,G,B] ; Der pixel darf nicht unterschreiten
+# maxPixelRange = [R,G,B] ; Der pixel darf nicht überschreiten
+# Return: True wenn in Range, ansonsten False
+
+
+def inColorRange(inputPixel, minPixelRange, maxPixelRange):
     for pos in range(3):
         # Erster Fall, zu niedrig
         if inputPixel[pos] < minPixelRange[pos]:
@@ -48,34 +50,34 @@ def inColorRange(inputPixel,minPixelRange,maxPixelRange):
 
 
 class GamesSaveState:
-    def __init__(self,password = '',path = '', resolution = '1920x1080', waittime = '15'):
+    def __init__(self, password='', path='', resolution='1920x1080', waittime='15'):
         self.password = password
         self.path = path
         self.resolution = resolution
         self.waittime = waittime
         self.create()
-    
+
     def read_waittime(self):
         return self.waittime
 
-    def write_waittime(self,waittime):
+    def write_waittime(self, waittime):
         self.waittime = waittime
 
     def read_resolution(self):
         return self.resolution
-    
-    def write_resolution(self,resolution):
+
+    def write_resolution(self, resolution):
         self.resolution = resolution
 
     def read_password(self):
         return self.password
-    
+
     def read_path(self):
         return self.path
-    
+
     def write_password(self, password):
         self.password = password
-    
+
     def write_path(self, path):
         self.path = path
 
@@ -86,15 +88,16 @@ class GamesSaveState:
 
     def paste_path(self):
         keyboard.wait("ctrl+v")
-        new_path = clipboard.paste().strip('"')  # Entfernt Anführungszeichen, wenn sie vorhanden sind
+        # Entfernt Anführungszeichen, wenn sie vorhanden sind
+        new_path = clipboard.paste().strip('"')
         self.write_path(new_path)
 
     def password_empty(self):
         return len(self.password) == 0
-    
+
     def path_empty(self):
         return len(self.path) == 0
-    
+
     def create(self):
         if not os.path.exists(self.config_path()):
             os.makedirs(self.config_path())
@@ -112,11 +115,11 @@ class GamesSaveState:
 
     def save(self):
         with open(self.config_file(), "+w") as file:
-                json.dump(self.write_data(), file)
+            json.dump(self.write_data(), file)
 
-    def _config_read_checker(self,jsonConfigFile,key: str,alternativValue: any) -> str:
+    def _config_read_checker(self, jsonConfigFile, key: str, alternativValue: any) -> str:
         try:
-            return str(jsonConfigFile[key] )
+            return str(jsonConfigFile[key])
         except KeyError:
             # Key nicht in Config vorhanden
             return str(alternativValue)
@@ -124,16 +127,20 @@ class GamesSaveState:
     def read(self):
         with open(self.config_file(), "r") as file:
             tmp = json.load(file)
-            self.password = self._config_read_checker(tmp,'password',self.password)
-            self.path =  self._config_read_checker(tmp,'path',self.path)
-            self.resolution = self._config_read_checker(tmp,'resolution',self.resolution)
-            self.waittime = self._config_read_checker(tmp,'waittime',self.waittime)
+            self.password = self._config_read_checker(
+                tmp, 'password', self.password)
+            self.path = self._config_read_checker(tmp, 'path', self.path)
+            self.resolution = self._config_read_checker(
+                tmp, 'resolution', self.resolution)
+            self.waittime = self._config_read_checker(
+                tmp, 'waittime', self.waittime)
 
     def config_path(self):
-        return os.path.join(os.getenv('APPDATA'),'grand_afk_game_start')
+        return os.path.join(os.getenv('APPDATA'), 'grand_afk_game_start')
 
     def config_file(self):
-        return os.path.join(self.config_path(),'config.json')
+        return os.path.join(self.config_path(), 'config.json')
+
 
 def prepare() -> GamesSaveState:
     speicherZustand = GamesSaveState()
@@ -148,44 +155,46 @@ def prepare() -> GamesSaveState:
         # speicherZustand.write_path(new_path)
         print("Bitte schreiben Sie den Pfad zur .exe-Datei ein oder (mit STRG+V): ")
         speicherZustand.paste_path()
-    
+
     print('Wartzeit zwischen den ausführungen:')
-    print('    Letzte verwendete Zeit '+ str(speicherZustand.read_waittime()))
+    print('    Letzte verwendete Zeit ' + str(speicherZustand.read_waittime()))
     print('    Gibt eine Zeit ein zwischen den ausführungen. Am besten für Langsame PCs ca 20sek ')
     print('    0. Standard 15 Sekunden')
     current_wait = input('Zahl eingeben: ')
     speicherZustand.write_waittime(f"{current_wait}")
-    match int(current_wait):   
+    match int(current_wait):
         case 0:
             speicherZustand.write_waittime('15')
-    print('Verwende Zeit: ' + str(speicherZustand.read_waittime()))        
+    print('Verwende Zeit: ' + str(speicherZustand.read_waittime()))
     log_to_file("Verwendete Zeit = " + str(speicherZustand.read_waittime()))
 
-
     print('Verfügbare Auflösungen:')
-    print('    0. Letzte Einstellung '+ str(speicherZustand.read_resolution()))
+    print('    0. Letzte Einstellung ' + str(speicherZustand.read_resolution()))
     print('    1. 1920x1080')
     print('    2. 800x600 randlos')
     current_res = input('Zahl eingeben: ')
-    match int(current_res):   
+    match int(current_res):
         case 1:
             speicherZustand.write_resolution('1920x1080')
         case 2:
             speicherZustand.write_resolution('800x600')
         case 0:
-            print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))
+            print('Verwende Auflösung: ' +
+                  str(speicherZustand.read_resolution()))
 
-    print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))        
-    log_to_file("Verwendete auflösung = " + str(speicherZustand.read_resolution()))
+    print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))
+    log_to_file("Verwendete auflösung = " +
+                str(speicherZustand.read_resolution()))
     speicherZustand.save()
     return speicherZustand
+
 
 def password():
     print("Password eingabe wurde erkannt.")
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(562,566,duration=0.5)
+        pyautogui.moveTo(562, 566, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(851, 550,duration=0.5)
+        pyautogui.moveTo(851, 550, duration=0.5)
     else:
         print('falsche auflösung')
 
@@ -194,20 +203,21 @@ def password():
     print("Password wird eingegeben.")
     warten()
     # keyboard.write('HIER PASSWORD EINGEBEN') # hier password eingeben
-    
+
     keyboard.write(speicherZustand.read_password())
     warten()
     print("Accoount wird eingeloggt.")
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(651,678,duration=0.5)
+        pyautogui.moveTo(651, 678, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(848, 580,duration=0.5)
+        pyautogui.moveTo(848, 580, duration=0.5)
     else:
         print('falsche auflösung')
-    
+
     warten()
     mouse.click('left')
     print("Login Fertig.")
+
 
 def pixelabfrage(game_coords):
     screenshot = ImageGrab.grab(
@@ -220,58 +230,64 @@ def pixelabfrage(game_coords):
     # print("x:" + str(xlen) + " y:" + str(ylen))
     midX = xlen // 2
     midY = ylen // 2
-    return  erkennung[midX, midY]
+    return erkennung[midX, midY]
+
 
 def ispasswordabfrage(coord):
     pixel = pixelabfrage(coord)
-    minColor = [237, 60, 86] # Minimun farbe range
-    maxColor = [245, 64, 91] # Maximum farbe range
-    if inColorRange(pixel,minColor,maxColor):
+    minColor = [237, 60, 86]  # Minimun farbe range
+    maxColor = [245, 64, 91]  # Maximum farbe range
+    if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"Password eingabe erkannt. R:G:B {pixel}")
         return True
     log_to_file(f"keine Password eingabe erkannt. R:G:B {pixel}")
     return False
 
+
 def isSpielAn(coord):
     pixel = pixelabfrage(coord)
     minColor = [249, 227, 52]
-    maxColor = [255, 234, 58] # Maximum farbe range
-    if inColorRange(pixel,minColor,maxColor):
+    maxColor = [255, 234, 58]  # Maximum farbe range
+    if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"Gelbe 1 erkannt. R:G:B {pixel}")
         return True
     log_to_file(f"Gelbe 1 nicht erkannt. R:G:B {pixel}")
     print(coord)
     return False
 
+
 def istgrandcoinssliderda(coord):
     pixel = pixelabfrage(coord)
     minColor = [239, 184, 36]
-    maxColor = [245, 188, 40] # Maximum farbe range
-    if inColorRange(pixel,minColor,maxColor):
+    maxColor = [245, 188, 40]  # Maximum farbe range
+    if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"grand coins slider erkannt. R:G:B {pixel}")
         return True
     log_to_file(f"Grandcoin slider nicht erkannt. R:G:B {pixel}")
     return False
 
+
 def IsServerFull(coord):
     pixel = pixelabfrage(coord)
-    minColor = [237, 60, 86] # Minimun farbe range
-    maxColor = [245, 64, 91] # Maximum farbe range
-    if inColorRange(pixel,minColor,maxColor):
+    minColor = [237, 60, 86]  # Minimun farbe range
+    maxColor = [245, 64, 91]  # Maximum farbe range
+    if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"Server Full. R:G:B {pixel}")
         return True
     log_to_file(f"Server nicht Full. R:G:B {pixel}")
     return False
 
+
 def IstHausda(coord):
     pixel = pixelabfrage(coord)
-    minColor = [208, 180, 38] # Minimun farbe range
-    maxColor = [215, 190, 45] # Maximum farbe range
-    if inColorRange(pixel,minColor,maxColor):
+    minColor = [208, 180, 38]  # Minimun farbe range
+    maxColor = [215, 190, 45]  # Maximum farbe range
+    if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"Haus erkannt. R:G:B {pixel}")
         return True
     log_to_file(f"Kein Haus erkannt. R:G:B {pixel}")
     return False
+
 
 def SpielBeenden():
     print("Alle programme werden beendet.")
@@ -289,53 +305,59 @@ def SpielBeenden():
     warten()
     os.system("taskkill /f /im updater.exe")
 
+
 def startding():
     log_to_file("RageMP wird gestart")
     print("Rage wird gestarted.")
     print_hour_and_minute()
     start_path = speicherZustand.read_path()
-    start_cmd = "start \"RageMp\" /d C:\\RAGEMP {execution_path}".format(execution_path=start_path)
-    os.system(start_cmd) 
-    # os.system("switch.bat \"RageMp\"") 
+    start_cmd = "start \"RageMp\" /d C:\\RAGEMP {execution_path}".format(
+        execution_path=start_path)
+    os.system(start_cmd)
+    # os.system("switch.bat \"RageMp\"")
+
 
 def RageMPconnenct():
     log_to_file("Ragemp Connect")
     print("Auf Grand connecten.")
     print_hour_and_minute()
-    pyautogui.moveTo(1357,217,duration=0.5)
+    pyautogui.moveTo(1357, 217, duration=0.5)
     warten()
     mouse.click('left')
     warten()
-    pyautogui.moveTo(864,557,duration=0.5)
+    pyautogui.moveTo(864, 557, duration=0.5)
     warten()
     mouse.click('left')
     mouse.click('left')
     mouse.click('left')
     warten()
     keyboard.write("de.gta5grand.com")
-    pyautogui.moveTo(1146,563,duration=0.5)
+    pyautogui.moveTo(1146, 563, duration=0.5)
     warten()
     mouse.click('left')
+
 
 def SpawnPunkt():
     log_to_file("Wird bei familie gespawnt")
     print("Spawnpunkt am Familienhaus wird ausgewählt.")
     print_hour_and_minute()
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(197,595,duration=0.5)
+        pyautogui.moveTo(197, 595, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(640, 562,duration=0.5)
+        pyautogui.moveTo(640, 562, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
+
 
 def PressW():
     keyboard.press('w')
     time.sleep(press)
-    keyboard.release('w')   
-    print("W wird gedrückt") 
+    keyboard.release('w')
+    print("W wird gedrückt")
+
 
 def PressA():
     keyboard.press('a')
@@ -343,11 +365,13 @@ def PressA():
     keyboard.release('a')
     print("A wird gedrückt")
 
+
 def PressS():
     keyboard.press('s')
     time.sleep(press)
     keyboard.release('s')
     print("D wird gedrückt")
+
 
 def PressD():
     keyboard.press('d')
@@ -355,11 +379,13 @@ def PressD():
     keyboard.release('d')
     print("D wird gedrückt")
 
+
 def warten():
     print(f"{speicherZustand.read_waittime()} Sekunden Pause")
     time.sleep(int(speicherZustand.read_waittime()))
 
-def GrandCoinSlider20hours(): #noch nicht fertig
+
+def GrandCoinSlider20hours():  # noch nicht fertig
     # investion moven und klicken
     coord = []
     if speicherZustand.read_resolution() == '1920x1080':
@@ -373,9 +399,9 @@ def GrandCoinSlider20hours(): #noch nicht fertig
         print("Grand Coins erkannt")
         # auf coins slider
         if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(950, 804,duration=0.5)
+            pyautogui.moveTo(950, 804, duration=0.5)
         elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(950, 804,duration=0.5)
+            pyautogui.moveTo(950, 804, duration=0.5)
         else:
             print('falsche auflösung')
         warten()
@@ -389,16 +415,17 @@ def GrandCoinSlider20hours(): #noch nicht fertig
         warten()
         # auf fertig drücken
         if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(950, 804,duration=0.5) 
+            pyautogui.moveTo(950, 804, duration=0.5)
         elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(950, 804,duration=0.5)
+            pyautogui.moveTo(950, 804, duration=0.5)
         else:
             print('falsche auflösung')
-        
+
         warten()
         mouse.click('left')
 
-def escbis20sdtSlider():#noch nicht fertig
+
+def escbis20sdtSlider():  # noch nicht fertig
     for x in range(10):
         coord = []
         if speicherZustand.read_resolution() == '1920x1080':
@@ -407,7 +434,7 @@ def escbis20sdtSlider():#noch nicht fertig
             coord = [950, 920, 960, 930]
         else:
             print('falsche auflösung')
-            
+
         if not istgrandcoinssliderda(coord):
             log_to_file("Kein grandcoin slider erkannt")
             print("Esc bis Grandcoinslider")
@@ -418,6 +445,7 @@ def escbis20sdtSlider():#noch nicht fertig
             print_hour_and_minute()
             break
 
+
 def Investion8Stunden():
     print("Investion 8 Stunden wird angenommen")
     log_to_file("8 Stunden invest wird angenommen")
@@ -427,62 +455,63 @@ def Investion8Stunden():
     warten()
     # investion moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1713, 1009,duration=0.5)
+        pyautogui.moveTo(1713, 1009, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1277, 811,duration=0.5)
+        pyautogui.moveTo(1277, 811, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
     # auf tagsüber moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(94, 537,duration=0.5)
+        pyautogui.moveTo(94, 537, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(598, 535,duration=0.5)
+        pyautogui.moveTo(598, 535, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     # scrollbar moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1608, 965,duration=0.5)
+        pyautogui.moveTo(1608, 965, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1230, 697,duration=0.5)
+        pyautogui.moveTo(1230, 697, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     mouse.click('left')
     warten()
-    # 8 stunden invest 
+    # 8 stunden invest
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1451, 866,duration=0.5)
+        pyautogui.moveTo(1451, 866, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1159, 674,duration=0.5)
+        pyautogui.moveTo(1159, 674, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     # annhemen
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(877, 725,duration=0.5)
+        pyautogui.moveTo(877, 725, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(919, 614,duration=0.5)
+        pyautogui.moveTo(919, 614, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     # rausgeben
     keyboard.press_and_release('esc')
+
 
 def Tagesinvestabholen():
     print("Investion 8 Stunden wird abgeholt")
@@ -493,49 +522,52 @@ def Tagesinvestabholen():
     warten()
     # investion moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1713, 1009,duration=0.5)
+        pyautogui.moveTo(1713, 1009, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1277, 811,duration=0.5)
+        pyautogui.moveTo(1277, 811, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
     # auf tagsüber moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(94, 537,duration=0.5)
+        pyautogui.moveTo(94, 537, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(598, 535,duration=0.5)
+        pyautogui.moveTo(598, 535, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     # scrollbar moven und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1608, 965,duration=0.5)
+        pyautogui.moveTo(1608, 965, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1230, 697,duration=0.5)
+        pyautogui.moveTo(1230, 697, duration=0.5)
     else:
-            print('falsche auflösung')
-    
+        print('falsche auflösung')
+
     warten()
     mouse.click('left')
     warten()
     mouse.click('left')
     warten()
-    # 8 stunden invest 
+    # 8 stunden invest
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1451, 866,duration=0.5)
+        pyautogui.moveTo(1451, 866, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1159, 674,duration=0.5)
+        pyautogui.moveTo(1159, 674, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-     
+    keyboard.press_and_release('esc')
+    warten()
+
+
 def FamAufgabe4Stunden():
     print("Familienaufgabe 4 Stunden wird angenommen")
     log_to_file("Familienaufgabe 4 Stunden wird angenommen")
@@ -546,9 +578,9 @@ def FamAufgabe4Stunden():
     warten()
     # auf familie moven
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(1087, 866,duration=0.5)
+        pyautogui.moveTo(1087, 866, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(1010, 761,duration=0.5)
+        pyautogui.moveTo(1010, 761, duration=0.5)
     else:
         print('falsche auflösung')
     warten()
@@ -556,36 +588,37 @@ def FamAufgabe4Stunden():
     warten()
     # familien aufgabe
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(156, 685,duration=0.5)
+        pyautogui.moveTo(156, 685, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(627, 592,duration=0.5)
+        pyautogui.moveTo(627, 592, duration=0.5)
     else:
         print('falsche auflösung')
-    
+
     warten()
     mouse.click('left')
     warten()
     # Scrollbar
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(1510, 1051,duration=0.5)
+        pyautogui.moveTo(1510, 1051, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(1182, 815,duration=0.5)
+        pyautogui.moveTo(1182, 815, duration=0.5)
     else:
         print('falsche auflösung')
-    
+
     warten()
     mouse.click('left')
     warten()
     # 4 stunden aufgabe annhemen
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(617, 994,duration=0.5)
+        pyautogui.moveTo(617, 994, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(814, 793,duration=0.5)
+        pyautogui.moveTo(814, 793, duration=0.5)
     else:
         print('falsche auflösung')
-    
+
     warten()
     mouse.click('left')
+
 
 def Geld80std():
     print("80 Stunden werden abgeholt")
@@ -596,25 +629,28 @@ def Geld80std():
 
     # Auf werbeprogramm ziehen und klicken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1795, 1015,duration=0.5)
+        pyautogui.moveTo(1795, 1015, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1314, 807,duration=0.5)
+        pyautogui.moveTo(1314, 807, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
     # Einsammeln ziehen und drücken
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1488, 915,duration=0.5)
+        pyautogui.moveTo(1488, 915, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1177, 695,duration=0.5)
+        pyautogui.moveTo(1177, 695, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
+    time.sleep(1)
+    mouse.click('left')
     escbisspielbeginn()
+
 
 def Hausbezahlen():
     print("Haus bezahlen")
@@ -624,14 +660,14 @@ def Hausbezahlen():
     warten()
     # Auf bank ziehen und kiklc
     if speicherZustand.read_resolution() == '1920x1080':
-            pyautogui.moveTo(1554, 817,duration=0.5)
+        pyautogui.moveTo(1554, 817, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-            pyautogui.moveTo(1208, 731,duration=0.5)
+        pyautogui.moveTo(1208, 731, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
-    warten()  
+    warten()
     Haus1()
     warten()
     Haus2()
@@ -640,49 +676,49 @@ def Hausbezahlen():
     warten()
     Haus4()
     warten()
-    
+
+
 def Haus1():
     print("Haus 1 bezahlen")
     log_to_file("Haus 1 bezahlen")
     # In Bank auf Haus bezahlen zeihen und klick # Fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(1464, 559,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(1173, 623,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(1464, 559, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(1173, 623, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
-    #Haus 1 zeiehn klick #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig für jeden Hasus machen
-            pyautogui.moveTo(954, 423,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(956, 490,duration=0.5)
+    # Haus 1 zeiehn klick #fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig für jeden Hasus machen
+        pyautogui.moveTo(954, 423, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(956, 490, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-    
+
     # Aus Weiter ziehen klikc #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(875, 714, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(925, 620, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-
 
     # Überprüfung ob  Haus zu beazheln ist da ist
     coord = []
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
         coord = [826, 719, 827, 720]
-    elif speicherZustand.read_resolution() == '800x600':#fertig
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
         coord = [905, 614, 906, 615]
     else:
         print('falsche auflösung')
@@ -691,11 +727,11 @@ def Haus1():
         log_to_file("Haus 1 wurde erkannt")
         print_hour_and_minute()
         print("Haus 1 wurde erkannt")
-        #Auf eingabe ziehen und klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(958, 590,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(963, 560,duration=0.5)
+        # Auf eingabe ziehen und klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(958, 590, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(963, 560, duration=0.5)
         else:
             print('falsche auflösung')
 
@@ -704,74 +740,75 @@ def Haus1():
         warten()
         keyboard.write('1')
         warten()
-        
-        #Auf weiter klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+
+        # Auf weiter klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(875, 714, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(925, 620, duration=0.5)
         else:
             print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
 
-        #Zahlung bestätigen
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-                pyautogui.moveTo(884, 647,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600': #fertig
-                pyautogui.moveTo(931, 586,duration=0.5)
+        # Zahlung bestätigen
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(884, 647, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(931, 586, duration=0.5)
         else:
-                print('falsche auflösung')
+            print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
     else:
-        print("Kein Haus Gefunden")
+        log_to_file("Haus 1 wurde Nicht erkannt")
+        print("Haus 1 nicht erkannt")
         print_hour_and_minute()
-            
+
+
 def Haus2():
     print("Haus 2 bezahlen")
     log_to_file("Haus 2 bezahlen")
     # In Bank auf Haus bezahlen zeihen und klick # Fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(1464, 559,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(1173, 623,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(1464, 559, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(1173, 623, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
-    #Haus  zeiehn klick #fertig
-    if speicherZustand.read_resolution() == '1920x1080':# für jeden Hasus machen#####################
-            pyautogui.moveTo(951, 516,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(954, 527,duration=0.5)
+    # Haus  zeiehn klick #fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # für jeden Hasus machen#####################
+        pyautogui.moveTo(951, 516, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(954, 527, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-    
+
     # Aus Weiter ziehen klikc #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(875, 714, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(925, 620, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-
 
     # Überprüfung ob  Haus zu beazheln ist da ist
     coord = []
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
         coord = [826, 719, 827, 720]
-    elif speicherZustand.read_resolution() == '800x600':#fertig
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
         coord = [905, 614, 906, 615]
     else:
         print('falsche auflösung')
@@ -780,11 +817,11 @@ def Haus2():
         log_to_file("Haus 2 wurde erkannt")
         print_hour_and_minute()
         print("Haus 2 wurde erkannt")
-        #Auf eingabe ziehen und klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(958, 590,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(963, 560,duration=0.5)
+        # Auf eingabe ziehen und klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(958, 590, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(963, 560, duration=0.5)
         else:
             print('falsche auflösung')
 
@@ -793,74 +830,75 @@ def Haus2():
         warten()
         keyboard.write('1')
         warten()
-        
-        #Auf weiter klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+
+        # Auf weiter klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(875, 714, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(925, 620, duration=0.5)
         else:
             print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
 
-        #Zahlung bestätigen
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-                pyautogui.moveTo(884, 647,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600': #fertig
-                pyautogui.moveTo(931, 586,duration=0.5)
+        # Zahlung bestätigen
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(884, 647, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(931, 586, duration=0.5)
         else:
-                print('falsche auflösung')
+            print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
     else:
-        print("Kein Haus Gefunden")
+        log_to_file("Haus 2 wurde nicht erkannt")
+        print("Haus 2 nicht erkannt")
         print_hour_and_minute()
+
 
 def Haus3():
     print("Haus 3 bezahlen")
     log_to_file("Haus 3 bezahlen")
     # In Bank auf Haus bezahlen zeihen und klick # Fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(1464, 559,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(1173, 623,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(1464, 559, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(1173, 623, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
-    #Haus 1 zeiehn klick #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig für jeden Hasus machen
-            pyautogui.moveTo(944, 603,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(956, 560,duration=0.5)
+    # Haus 1 zeiehn klick #fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig für jeden Hasus machen
+        pyautogui.moveTo(944, 603, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(956, 560, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-    
+
     # Aus Weiter ziehen klikc #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(875, 714, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(925, 620, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
-
 
     # Überprüfung ob  Haus zu beazheln ist da ist
     coord = []
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
         coord = [826, 719, 827, 720]
-    elif speicherZustand.read_resolution() == '800x600':#fertig
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
         coord = [905, 614, 906, 615]
     else:
         print('falsche auflösung')
@@ -869,11 +907,11 @@ def Haus3():
         log_to_file("Haus 1 wurde erkannt")
         print_hour_and_minute()
         print("Haus 1 wurde erkannt")
-        #Auf eingabe ziehen und klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(958, 590,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(963, 560,duration=0.5)
+        # Auf eingabe ziehen und klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(958, 590, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(963, 560, duration=0.5)
         else:
             print('falsche auflösung')
 
@@ -882,76 +920,77 @@ def Haus3():
         warten()
         keyboard.write('1')
         warten()
-        
-        #Auf weiter klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+
+        # Auf weiter klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(875, 714, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(925, 620, duration=0.5)
         else:
             print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
 
-        #Zahlung bestätigen
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-                pyautogui.moveTo(884, 647,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600': #fertig
-                pyautogui.moveTo(931, 586,duration=0.5)
+        # Zahlung bestätigen
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(884, 647, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(931, 586, duration=0.5)
         else:
-                print('falsche auflösung')
+            print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
     else:
-        print("Kein Haus Gefunden")
+        log_to_file("Haus 3 wurde Nicht erkannt")
+        print("Haus 3 nicht erkannt")
         print_hour_and_minute()
+
 
 def Haus4():
     print("Haus 4 bezahlen")
     log_to_file("Haus 4 bezahlen")
     # In Bank auf Haus bezahlen zeihen und klick # Fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(1464, 559,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(1173, 623,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(1464, 559, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(1173, 623, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
-    #Haus 1 zeiehn klick #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig für jeden Hasus machen
-            pyautogui.moveTo(944, 603,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(956, 560,duration=0.5)
+    # Haus 1 zeiehn klick #fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig für jeden Hasus machen
+        pyautogui.moveTo(944, 603, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(956, 560, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.wheel(-200)
     warten()
     mouse.click('left')
     warten()
-    
+
     # Aus Weiter ziehen klikc #fertig
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-    elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
+        pyautogui.moveTo(875, 714, duration=0.5)
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
+        pyautogui.moveTo(925, 620, duration=0.5)
     else:
-            print('falsche auflösung')
+        print('falsche auflösung')
     warten()
     mouse.click('left')
     warten()
 
-
     # Überprüfung ob  Haus zu beazheln ist da ist
     coord = []
-    if speicherZustand.read_resolution() == '1920x1080':#fertig
+    if speicherZustand.read_resolution() == '1920x1080':  # fertig
         coord = [826, 719, 827, 720]
-    elif speicherZustand.read_resolution() == '800x600':#fertig
+    elif speicherZustand.read_resolution() == '800x600':  # fertig
         coord = [905, 614, 906, 615]
     else:
         print('falsche auflösung')
@@ -960,11 +999,11 @@ def Haus4():
         log_to_file("Haus 1 wurde erkannt")
         print_hour_and_minute()
         print("Haus 1 wurde erkannt")
-        #Auf eingabe ziehen und klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(958, 590,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(963, 560,duration=0.5)
+        # Auf eingabe ziehen und klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(958, 590, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(963, 560, duration=0.5)
         else:
             print('falsche auflösung')
 
@@ -973,34 +1012,37 @@ def Haus4():
         warten()
         keyboard.write('1')
         warten()
-        
-        #Auf weiter klicken
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-            pyautogui.moveTo(875, 714,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600':#fertig
-            pyautogui.moveTo(925, 620,duration=0.5)
+
+        # Auf weiter klicken
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(875, 714, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(925, 620, duration=0.5)
         else:
             print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
 
-        #Zahlung bestätigen
-        if speicherZustand.read_resolution() == '1920x1080':#fertig
-                pyautogui.moveTo(884, 647,duration=0.5)
-        elif speicherZustand.read_resolution() == '800x600': #fertig
-                pyautogui.moveTo(931, 586,duration=0.5)
+        # Zahlung bestätigen
+        if speicherZustand.read_resolution() == '1920x1080':  # fertig
+            pyautogui.moveTo(884, 647, duration=0.5)
+        elif speicherZustand.read_resolution() == '800x600':  # fertig
+            pyautogui.moveTo(931, 586, duration=0.5)
         else:
-                print('falsche auflösung')
+            print('falsche auflösung')
         warten()
         mouse.click('left')
         warten()
     else:
-        print("Kein Haus Gefunden")
+        log_to_file("Haus 4 wurde Nicht erkannt")
+        print("Haus 4 nicht erkannt")
         print_hour_and_minute()
+
 
 global stop
 stop = True
+
 
 def start_event():
     global stop
@@ -1008,17 +1050,19 @@ def start_event():
     print("Start")
     log_to_file("AFK Bot Programm start mit X taste")
 
+
 def stop_event():
     global stop
     stop = True
     print("Wird Pausiert")
     log_to_file("AFK Bot Programm stop mit e taste")
 
+
 keyboard.add_hotkey('x', lambda: start_event())
 # keyboard.add_hotkey('e', lambda: stop_event())
 
 
-def istImZeitraum(start_time=(0,0),end_time=(0,0)):
+def istImZeitraum(start_time=(0, 0), end_time=(0, 0)):
     systemzeit = time.localtime()
     st = time.localtime()
     from_start = time.struct_time(
@@ -1054,7 +1098,9 @@ def istImZeitraum(start_time=(0,0),end_time=(0,0)):
         return False
     return True
 
+
 counter = 0
+
 
 def solangeSpielAktivIst():
     print_hour_and_minute()
@@ -1066,68 +1112,67 @@ def solangeSpielAktivIst():
     else:
         print('falsche auflösung')
     while isSpielAn(coord):
+        print_hour_and_minute()
+        log_to_file("Ist im Spiel")
+        print("Spiel erkannt")
+        time.sleep(3)
+        global counter
+        counter += 1
+        print(counter)
+
+        if counter % 113 == 0:
+            print(" Im Counter zählerr")
+            PressW()
+            time.sleep(1)
+            PressS()
+
+            counter = 0
+
+        # Server Neustart
+        if istImZeitraum((4, 0), (4, 1)):
+            log_to_file("4 Uhr Server Neustart")
             print_hour_and_minute()
-            log_to_file("Ist im Spiel")
-            print("Spiel erkannt")
-            time.sleep(3)
-            global counter
-            counter += 1
-            print(counter)
+            SpielBeenden()
+            time.sleep(600)
 
-            if counter % 113 == 0:
-                print(" Im Counter zählerr")
-                PressW()
-                time.sleep(1)
-                PressS()
-            
-                counter = 0
+        # Tagesinvest
+        if istImZeitraum((5, 1), (5, 3)) or istImZeitraum((5, 40), (5, 41)):
+            log_to_file("05:01Uhr oder 05:40Uhr Invest und Fam")
+            Investion8Stunden()
+            print_hour_and_minute()
+            FamAufgabe4Stunden()
+            print_hour_and_minute()
+            time.sleep(120)
+            escbisspielbeginn()
 
-            # Server Neustart
-            if istImZeitraum((4,0),(4,1)):
-                log_to_file("4 Uhr Server Neustart")
-                print_hour_and_minute()
-                SpielBeenden()
-                time.sleep(600)
+        if istImZeitraum((9, 26), (9, 27)) or istImZeitraum((12, 40), (12, 41)):
+            Hausbezahlen()
+            keyboard.press_and_release('esc')
+            escbisspielbeginn()
+            time.sleep(120)
 
-            # Tagesinvest
-            if istImZeitraum((5,1),(5,3)) or istImZeitraum((5,40),(5,41)):
-                log_to_file("05:01Uhr oder 05:40Uhr Invest und Fam")
-                Investion8Stunden()
-                print_hour_and_minute()
-                FamAufgabe4Stunden()
-                print_hour_and_minute()
-                time.sleep(120)
-                escbisspielbeginn()
+        # 15 Uhr Relog
+        # 20 Uhr Relog
+        if istImZeitraum((15, 1), (15, 2)) or istImZeitraum((20, 1), (20, 1)):
+            log_to_file("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
+            print("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
+            SpielBeenden()
+            time.sleep(120)
 
-            if istImZeitraum((9,26),(9,27)):
-                Hausbezahlen()
-                keyboard.press_and_release('esc')
-                escbisspielbeginn()
-                time.sleep(120)
+        if istImZeitraum((17, 0), (17, 1)) or istImZeitraum((23, 0), (23, 1)):
+            Tagesinvestabholen()
+            escbisspielbeginn()
+            time.sleep(120)
 
-            ## 15 Uhr Relog
-            # 20 Uhr Relog
-            if istImZeitraum((15,1),(15,2)) or istImZeitraum((20,1),(20,1)):
-                log_to_file("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
-                print("15:00Uhr oder 20:01Uhr Relog für Speicherpunkt")
-                SpielBeenden()
-                time.sleep(120)
+        if istImZeitraum((18, 15), (18, 16)):
+            log_to_file("80 Std Abholen ")
+            print("80 Std Abholen")
+            Geld80std()
+            time.sleep(120)
 
-            if istImZeitraum((17,0),(17,1)) or istImZeitraum((23,0),(23,1)):
-                Tagesinvestabholen()
-                escbisspielbeginn()
-                time.sleep(120)
-
-            if istImZeitraum((18,15),(18,16)):
-                log_to_file("80 Std Abholen ")
-                print("80 Std Abholen")
-                Geld80std()
-                time.sleep(120)
-
-            
 
 def escbisspielbeginn():
-    for x in range(10): 
+    for x in range(10):
         coord = []
         if speicherZustand.read_resolution() == '1920x1080':
             coord = [1870, 50, 1880, 55]
@@ -1146,6 +1191,7 @@ def escbisspielbeginn():
             print_hour_and_minute()
             break
 
+
 def IstServerFull():
     for v in range(15):
         coord = []
@@ -1160,17 +1206,18 @@ def IstServerFull():
             print_hour_and_minute()
             print("Server ist überfüllt. Erneuter Login wird durchgeführt.")
             warten()
-            pyautogui.moveTo(651,678,duration=0.5)
+            pyautogui.moveTo(651, 678, duration=0.5)
             warten()
             mouse.click('left')
         else:
             print_hour_and_minute()
             break
-            
+
         time.sleep(0.5)
 
+
 def loginfertig():
-    for y in range(300): 
+    for y in range(300):
         print("Warte auf login screen")
         print_hour_and_minute()
         coord = []
@@ -1180,7 +1227,7 @@ def loginfertig():
             coord = [1094, 561, 1095, 562]
         else:
             print('falsche auflösung')
-       
+
         if ispasswordabfrage(coord):
             print("Password eingabe erkannt")
             print_hour_and_minute()
@@ -1199,9 +1246,10 @@ def loginfertig():
             break
         time.sleep(1)
 
+
 speicherZustand = prepare()
 
-while True:    
+while True:
     # warten bis eingabe dann start
     print("Zum Starten X drücken")
     while stop == True:
@@ -1210,13 +1258,13 @@ while True:
 
     while stop == False:
         solangeSpielAktivIst()
-        warten()          
-        SpielBeenden()       
-        warten()   
+        warten()
+        SpielBeenden()
+        warten()
         startding()
-        warten()     
+        warten()
         RageMPconnenct()
-        #print("Warten 300 Sekunden.")
+        # print("Warten 300 Sekunden.")
         time.sleep(60)
         print("Fertig mit warten, login wird abgefragt.")
         loginfertig()
