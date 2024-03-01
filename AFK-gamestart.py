@@ -246,8 +246,8 @@ def ispasswordabfrage(coord):
 
 def isSpielAn(coord):
     pixel = pixelabfrage(coord)
-    minColor = [249, 227, 52]
-    maxColor = [255, 234, 58]  # Maximum farbe range
+    minColor = [237, 237, 237]
+    maxColor = [255, 255, 255]  # Maximum farbe range
     if inColorRange(pixel, minColor, maxColor):
         log_to_file(f"Gelbe 1 erkannt. R:G:B {pixel}")
         return True
@@ -1106,9 +1106,9 @@ def solangeSpielAktivIst():
     print_hour_and_minute()
     coord = []
     if speicherZustand.read_resolution() == '1920x1080':
-        coord = [1870, 50, 1880, 55]
+        coord = [1847, 25, 1848, 26]  # new
     elif speicherZustand.read_resolution() == '800x600':
-        coord = [1333, 265, 1334, 266]
+        coord = [1319, 253, 1320, 254]  # new
     else:
         print('falsche auflösung')
     while isSpielAn(coord):
@@ -1175,9 +1175,9 @@ def escbisspielbeginn():
     for x in range(10):
         coord = []
         if speicherZustand.read_resolution() == '1920x1080':
-            coord = [1870, 50, 1880, 55]
+            coord = [1847, 25, 1848, 26]  # new
         elif speicherZustand.read_resolution() == '800x600':
-            coord = [1333, 265, 1334, 266]
+            coord = [1319, 253, 1320, 254]  # new
         else:
             print('falsche auflösung')
 
@@ -1259,13 +1259,13 @@ while True:
     while stop == False:
         solangeSpielAktivIst()
         warten()
-        SpielBeenden()
-        warten()
-        startding()
-        warten()
-        RageMPconnenct()
-        # print("Warten 300 Sekunden.")
-        time.sleep(60)
-        print("Fertig mit warten, login wird abgefragt.")
+        # SpielBeenden()
+        # warten()
+        # startding()
+        # warten()
+        # RageMPconnenct()
+        # # print("Warten 300 Sekunden.")
+        # time.sleep(60)
+        # print("Fertig mit warten, login wird abgefragt.")
         loginfertig()
-        warten()
+        # warten()
