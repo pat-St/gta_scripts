@@ -165,22 +165,35 @@ def prepare() -> GamesSaveState:
     match int(current_wait):
         case 0:
             speicherZustand.write_waittime('15')
-    print('Verwende Zeit: ' + str(speicherZustand.read_waittime()))
+    print('Verwende Zeit: ' + str(speicherZustand.read_waittime()), 'sekunden.')
     log_to_file("Verwendete Zeit = " + str(speicherZustand.read_waittime()))
 
-    print('Verfügbare Auflösungen:')
-    print('    0. Letzte Einstellung ' + str(speicherZustand.read_resolution()))
-    print('    1. 1920x1080')
-    print('    2. 800x600 randlos')
-    current_res = input('Zahl eingeben: ')
-    match int(current_res):
-        case 1:
-            speicherZustand.write_resolution('1920x1080')
-        case 2:
-            speicherZustand.write_resolution('800x600')
-        case 0:
-            print('Verwende Auflösung: ' +
-                  str(speicherZustand.read_resolution()))
+    if isSpielAn([1847, 25, 1848, 26]):
+        speicherZustand.write_resolution('1920x1080')
+    elif isSpielAn([1319, 253, 1320, 254]):
+        speicherZustand.write_resolution('800x600')
+    else:
+        speicherZustand.write_resolution('0')
+        print('Kein Spiel erkannt')
+        quit()
+
+    # print('Verfügbare Auflösungen:')
+    # print('    0. Letzte Einstellung ' + str(speicherZustand.read_resolution()))
+    # print('    1. 1920x1080')
+    # print('    2. 800x600 randlos')
+    # current_res = input('Zahl eingeben: ')
+    # match int(current_res):
+    #     case 1:
+    #         speicherZustand.write_resolution('1920x1080')
+    #         print('Verwende Auflösung: ' +
+    #               str(speicherZustand.read_resolution()))
+    #     case 2:
+    #         speicherZustand.write_resolution('800x600')
+    #         print('Verwende Auflösung: ' +
+    #               str(speicherZustand.read_resolution()))
+    #     case 0:
+    #         print('Verwende Auflösung: ' +
+    #               str(speicherZustand.read_resolution()))
 
     print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))
     log_to_file("Verwendete auflösung = " +
@@ -252,7 +265,7 @@ def isSpielAn(coord):
         log_to_file(f"Gelbe 1 erkannt. R:G:B {pixel}")
         return True
     log_to_file(f"Gelbe 1 nicht erkannt. R:G:B {pixel}")
-    print(coord)
+    # print(coord)
     return False
 
 
@@ -500,9 +513,9 @@ def Investion8Stunden():
     warten()
     # annhemen
     if speicherZustand.read_resolution() == '1920x1080':
-        pyautogui.moveTo(877, 725, duration=0.5)
+        pyautogui.moveTo(1041, 638, duration=0.5)
     elif speicherZustand.read_resolution() == '800x600':
-        pyautogui.moveTo(919, 614, duration=0.5)
+        pyautogui.moveTo(1001, 578, duration=0.5)
     else:
         print('falsche auflösung')
 
@@ -948,7 +961,7 @@ def solangeSpielAktivIst():
             SpielBeenden()
             time.sleep(600)
 
-        # Tagesinvest
+        # # Tagesinvest
         if istImZeitraum((5, 1), (5, 3)) or istImZeitraum((5, 40), (5, 41)):
             log_to_file("05:01Uhr oder 05:40Uhr Invest und Fam")
             Investion8Stunden()
