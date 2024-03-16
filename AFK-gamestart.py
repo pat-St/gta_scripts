@@ -173,27 +173,29 @@ def prepare() -> GamesSaveState:
     elif isSpielAn([1319, 253, 1320, 254]):
         speicherZustand.write_resolution('800x600')
     else:
-        speicherZustand.write_resolution('0')
-        print('Kein Spiel erkannt')
-        quit()
-
-    # print('Verfügbare Auflösungen:')
-    # print('    0. Letzte Einstellung ' + str(speicherZustand.read_resolution()))
-    # print('    1. 1920x1080')
-    # print('    2. 800x600 randlos')
-    # current_res = input('Zahl eingeben: ')
-    # match int(current_res):
-    #     case 1:
-    #         speicherZustand.write_resolution('1920x1080')
-    #         print('Verwende Auflösung: ' +
-    #               str(speicherZustand.read_resolution()))
-    #     case 2:
-    #         speicherZustand.write_resolution('800x600')
-    #         print('Verwende Auflösung: ' +
-    #               str(speicherZustand.read_resolution()))
-    #     case 0:
-    #         print('Verwende Auflösung: ' +
-    #               str(speicherZustand.read_resolution()))
+        print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))
+        print('Kein aktives Spiel erkannt')
+        print('Bitte benutze eins von den Verfügbaren Auflösungen:')
+        print('    0. Letzte Einstellung ' +
+              str(speicherZustand.read_resolution()))
+        print('    1. 1920x1080')
+        print('    2. 800x600 randlos')
+        print('    3. Quit')
+        current_res = input('Zahl eingeben: ')
+        match int(current_res):
+            case 1:
+                speicherZustand.write_resolution('1920x1080')
+                print('Verwende Auflösung: ' +
+                      str(speicherZustand.read_resolution()))
+            case 2:
+                speicherZustand.write_resolution('800x600')
+                print('Verwende Auflösung: ' +
+                      str(speicherZustand.read_resolution()))
+            case 3:
+                quit()
+            case 0:
+                print('Verwende Auflösung: ' +
+                      str(speicherZustand.read_resolution()))
 
     print('Verwende Auflösung: ' + str(speicherZustand.read_resolution()))
     log_to_file("Verwendete auflösung = " +
